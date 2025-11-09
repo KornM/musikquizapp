@@ -1,0 +1,13 @@
+# Music Quiz Backend - Root Requirements
+# Lambda function dependencies
+
+# AWS SDK
+boto3>=1.28.0
+
+# Authentication
+PyJWT>=2.8.0
+passlib>=1.7.4
+
+# Testing
+pytest>=7.4.0
+pytest-mock>=3.11.1

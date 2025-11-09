@@ -1,0 +1,1 @@
+# Reset points Lambda function

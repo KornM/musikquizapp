@@ -1,0 +1,93 @@
+"""
+Authentication utility module for JWT token management and password hashing.
+"""
+import jwt
+import bcrypt
+import os
+from datetime import datetime, timedelta
+
+
+# JWT secret should be stored in AWS Secrets Manager in production
+JWT_SECRET = os.environ.get("JWT_SECRET", "default-secret-change-in-production")
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRATION_HOURS = 24
+
+
+def generate_token(user_id, role):
+    """
+    Generate a JWT token for authenticated users.
+
+    Args:
+        user_id (str): Unique identifier for the user
+        role (str): User role ('admin' or 'participant')
+
+    Returns:
+        str: JWT token string
+    """
+    now = datetime.utcnow()
+    expiration = now + timedelta(hours=JWT_EXPIRATION_HOURS)
+
+    payload = {
+        "sub": user_id,
+        "role": role,
+        "iat": int(now.timestamp()),
+        "exp": int(expiration.timestamp()),
+    }
+
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return token
+
+
+def validate_token(token):
+    """
+    Validate and decode a JWT token.
+
+    Args:
+        token (str): JWT token string
+
+    Returns:
+        dict: Decoded token payload if valid
+
+    Raises:
+        jwt.ExpiredSignatureError: If token has expired
+        jwt.InvalidTokenError: If token is invalid
+    """
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise jwt.ExpiredSignatureError("Token has expired")
+    except jwt.InvalidTokenError:
+        raise jwt.InvalidTokenError("Invalid token")
+
+
+def hash_password(password):
+    """
+    Hash a password using bcrypt.
+
+    Args:
+        password (str): Plain text password
+
+    Returns:
+        str: Hashed password string
+    """
+    password_bytes = password.encode("utf-8")
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    return hashed.decode("utf-8")
+
+
+def verify_password(password, password_hash):
+    """
+    Verify a password against a bcrypt hash.
+
+    Args:
+        password (str): Plain text password to verify
+        password_hash (str): Hashed password to compare against
+
+    Returns:
+        bool: True if password matches, False otherwise
+    """
+    password_bytes = password.encode("utf-8")
+    hash_bytes = password_hash.encode("utf-8")
+    return bcrypt.checkpw(password_bytes, hash_bytes)

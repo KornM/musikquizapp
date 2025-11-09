@@ -1,0 +1,1 @@
+# Clear participants Lambda function
