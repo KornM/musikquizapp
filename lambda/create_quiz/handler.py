@@ -37,7 +37,7 @@ def lambda_handler(event, context):
         {
             "title": "Quiz Title",
             "description": "Quiz Description",
-            "requiresAudio": true
+            "mediaType": "audio"  // "none", "audio", or "image"
         }
 
     Returns:
@@ -115,9 +115,19 @@ def lambda_handler(event, context):
             )
 
         description = body.get("description", "")
-        requires_audio = body.get(
-            "requiresAudio", True
-        )  # Default to True for backward compatibility
+        media_type = body.get(
+            "mediaType", "audio"
+        )  # Default to "audio" for backward compatibility
+
+        # Validate media type
+        valid_media_types = ["none", "audio", "image"]
+        if media_type not in valid_media_types:
+            return error_response(
+                400,
+                "INVALID_MEDIA_TYPE",
+                f"mediaType must be one of: {', '.join(valid_media_types)}",
+                {"provided": media_type, "valid": valid_media_types},
+            )
 
         # Generate session ID and timestamp
         session_id = str(uuid.uuid4())
@@ -132,7 +142,7 @@ def lambda_handler(event, context):
             "createdAt": created_at,
             "roundCount": 0,
             "status": "draft",
-            "requiresAudio": requires_audio,
+            "mediaType": media_type,
         }
 
         # Store session in DynamoDB

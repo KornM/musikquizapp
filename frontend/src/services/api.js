@@ -85,6 +85,28 @@ export default {
     return apiClient.get(`/audio?key=${encodeURIComponent(audioKey)}`)
   },
 
+  // Image
+  uploadImage(file, sessionId) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = async () => {
+        try {
+          const base64Data = reader.result.split(',')[1]
+          const response = await apiClient.post('/admin/image', {
+            imageData: base64Data,
+            fileName: file.name,
+            sessionId
+          })
+          resolve(response)
+        } catch (error) {
+          reject(error)
+        }
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  },
+
   // QR Code
   getQRData(sessionId) {
     return apiClient.get(`/quiz-sessions/${sessionId}/qr`)

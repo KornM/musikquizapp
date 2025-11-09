@@ -76,9 +76,9 @@
               </v-card-text>
             </v-card>
 
-            <!-- Audio Player (only if session requires audio) -->
+            <!-- Audio Player (only if session uses audio) -->
             <v-card
-              v-if="session.requiresAudio !== false"
+              v-if="session.mediaType === 'audio'"
               class="mb-6"
               elevation="4"
             >
@@ -93,6 +93,23 @@
                   class="audio-player"
                   @play="handleAudioPlay"
                 />
+              </v-card-text>
+            </v-card>
+
+            <!-- Image Display (only if session uses images) -->
+            <v-card
+              v-if="session.mediaType === 'image'"
+              class="mb-6"
+              elevation="4"
+            >
+              <v-card-text class="text-center">
+                <v-img
+                  v-if="currentImageUrl"
+                  :src="currentImageUrl"
+                  max-height="400"
+                  contain
+                />
+                <v-icon v-else size="64" color="primary">mdi-image</v-icon>
               </v-card-text>
             </v-card>
 
@@ -203,6 +220,7 @@ const loading = ref(false);
 const currentRoundIndex = ref(0);
 const showAnswer = ref(false);
 const currentAudioUrl = ref(null);
+const currentImageUrl = ref(null);
 const startingRound = ref(false);
 const scoreboard = ref([]);
 
@@ -228,7 +246,7 @@ onMounted(async () => {
   loading.value = false;
 
   if (currentRound.value) {
-    loadAudio();
+    loadMedia();
   }
 
   // Load scoreboard initially
@@ -255,6 +273,25 @@ const loadAudio = async () => {
   }
 };
 
+const loadImage = async () => {
+  if (currentRound.value?.imageKey) {
+    try {
+      const response = await api.getAudioUrl(currentRound.value.imageKey);
+      currentImageUrl.value = response.data.url;
+    } catch (error) {
+      console.error("Failed to load image:", error);
+    }
+  }
+};
+
+const loadMedia = () => {
+  if (session.value.mediaType === "audio") {
+    loadAudio();
+  } else if (session.value.mediaType === "image") {
+    loadImage();
+  }
+};
+
 const getAnswerColor = (index) => {
   if (showAnswer.value && index === currentRound.value.correctAnswer) {
     return "success";
@@ -270,7 +307,7 @@ const nextRound = () => {
   if (currentRoundIndex.value < session.value.rounds.length - 1) {
     currentRoundIndex.value++;
     showAnswer.value = false;
-    loadAudio();
+    loadMedia();
   }
 };
 
@@ -278,7 +315,7 @@ const previousRound = () => {
   if (currentRoundIndex.value > 0) {
     currentRoundIndex.value--;
     showAnswer.value = false;
-    loadAudio();
+    loadMedia();
   }
 };
 

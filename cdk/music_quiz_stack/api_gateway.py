@@ -111,6 +111,12 @@ class MusicQuizApi(Construct):
             "POST", apigateway.LambdaIntegration(lambda_functions.upload_audio)
         )
 
+        # POST /admin/image
+        image_admin = admin.add_resource("image")
+        image_admin.add_method(
+            "POST", apigateway.LambdaIntegration(lambda_functions.upload_image)
+        )
+
         # Public quiz session endpoints
         quiz_sessions = self.api.root.add_resource("quiz-sessions")
 

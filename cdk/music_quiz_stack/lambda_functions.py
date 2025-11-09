@@ -128,6 +128,23 @@ class LambdaFunctions(Construct):
         audio_bucket.grant_write(self.upload_audio)
         audio_bucket.grant_put(self.upload_audio)
 
+        # Upload Image Lambda
+        self.upload_image = lambda_.Function(
+            self,
+            "UploadImageFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "upload_image")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(60),
+            memory_size=512,
+        )
+        audio_bucket.grant_write(self.upload_image)
+        audio_bucket.grant_put(self.upload_image)
+
         # Get Quiz Session Lambda
         self.get_quiz = lambda_.Function(
             self,

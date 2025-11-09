@@ -93,6 +93,20 @@ export const useSessionsStore = defineStore('sessions', {
       }
     },
 
+    async uploadImage(file, sessionId) {
+      this.loading = true
+      this.error = null
+      try {
+        const response = await api.uploadImage(file, sessionId)
+        return { success: true, data: response.data }
+      } catch (error) {
+        this.error = error.response?.data?.error?.message || 'Failed to upload image'
+        return { success: false, error: this.error }
+      } finally {
+        this.loading = false
+      }
+    },
+
     async deleteSession(sessionId) {
       this.loading = true
       this.error = null

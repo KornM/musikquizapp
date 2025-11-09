@@ -29,29 +29,29 @@
         }
       }
     },
-    "e9cfcbb6770301a1df8fd948d68469953d515d0f32b83bcbba3c18d36f679cec": {
+    "21f1523f40e78586947367d8d46ed04b3176302b27f9ccf5d62f29b9123b770c": {
       "source": {
-        "path": "asset.e9cfcbb6770301a1df8fd948d68469953d515d0f32b83bcbba3c18d36f679cec",
+        "path": "asset.21f1523f40e78586947367d8d46ed04b3176302b27f9ccf5d62f29b9123b770c",
         "packaging": "zip"
       },
       "destinations": {
         "967169659906-eu-central-1": {
           "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-          "objectKey": "e9cfcbb6770301a1df8fd948d68469953d515d0f32b83bcbba3c18d36f679cec.zip",
+          "objectKey": "21f1523f40e78586947367d8d46ed04b3176302b27f9ccf5d62f29b9123b770c.zip",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
         }
       }
     },
-    "036098c2e381645806dfa76b2b806c62b44be05ee4cf281bfbc885851f6bc3f0": {
+    "9cf16dc386c750b88e8400dd72a9faaffacaec2dea99335486fc0f217bef4e3a": {
       "source": {
-        "path": "asset.036098c2e381645806dfa76b2b806c62b44be05ee4cf281bfbc885851f6bc3f0",
+        "path": "asset.9cf16dc386c750b88e8400dd72a9faaffacaec2dea99335486fc0f217bef4e3a",
         "packaging": "zip"
       },
       "destinations": {
         "967169659906-eu-central-1": {
           "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-          "objectKey": "036098c2e381645806dfa76b2b806c62b44be05ee4cf281bfbc885851f6bc3f0.zip",
+          "objectKey": "9cf16dc386c750b88e8400dd72a9faaffacaec2dea99335486fc0f217bef4e3a.zip",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
         }
@@ -66,6 +66,20 @@
         "967169659906-eu-central-1": {
           "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
           "objectKey": "ae7220f5ff66b87f45db29e233e6305f04f18a41d3b73a338a1154d8bc0e1c0b.zip",
+          "region": "eu-central-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
+        }
+      }
+    },
+    "9faa07a1b3eff9b8ad2f5cbb7fd48a23f1e89ad4024d041ead070c67a8e32b3c": {
+      "source": {
+        "path": "asset.9faa07a1b3eff9b8ad2f5cbb7fd48a23f1e89ad4024d041ead070c67a8e32b3c",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "967169659906-eu-central-1": {
+          "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+          "objectKey": "9faa07a1b3eff9b8ad2f5cbb7fd48a23f1e89ad4024d041ead070c67a8e32b3c.zip",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
         }
@@ -253,7 +267,7 @@
         }
       }
     },
-    "721a7bbd7e4739b662a9d4e9e2e0ec73eb94647903d51139b199a8fa2a03c2ee": {
+    "ff8a5c52c214db52652c878e4e92a4be7e2e0bce2a3c4ff0fef87898f6f9f0f8": {
       "source": {
         "path": "MusicQuizStack.template.json",
         "packaging": "file"
@@ -261,7 +275,7 @@
       "destinations": {
         "967169659906-eu-central-1": {
           "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-          "objectKey": "721a7bbd7e4739b662a9d4e9e2e0ec73eb94647903d51139b199a8fa2a03c2ee.json",
+          "objectKey": "ff8a5c52c214db52652c878e4e92a4be7e2e0bce2a3c4ff0fef87898f6f9f0f8.json",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
         }

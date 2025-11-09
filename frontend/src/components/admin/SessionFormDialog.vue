@@ -28,11 +28,12 @@
             class="mb-3"
           />
 
-          <v-switch
-            v-model="requiresAudio"
-            label="Requires Audio"
-            color="primary"
-            hint="Enable if rounds need audio files (music quiz). Disable for text-only questions."
+          <v-select
+            v-model="mediaType"
+            label="Quiz Type"
+            :items="mediaTypeOptions"
+            variant="outlined"
+            hint="Choose the type of media for this quiz"
             persistent-hint
           />
         </v-form>
@@ -67,9 +68,15 @@ const sessionsStore = useSessionsStore();
 const formRef = ref(null);
 const title = ref("");
 const description = ref("");
-const requiresAudio = ref(true);
+const mediaType = ref("audio");
 const loading = ref(false);
 const error = ref(null);
+
+const mediaTypeOptions = [
+  { value: "none", title: "Text Only - No media files" },
+  { value: "audio", title: "Music Quiz - Audio files" },
+  { value: "image", title: "Picture Quiz - Image files" },
+];
 
 const rules = {
   required: (value) => !!value || "This field is required",
@@ -85,7 +92,7 @@ const handleCreate = async () => {
   const result = await sessionsStore.createSession({
     title: title.value,
     description: description.value,
-    requiresAudio: requiresAudio.value,
+    mediaType: mediaType.value,
   });
 
   loading.value = false;
@@ -93,7 +100,7 @@ const handleCreate = async () => {
   if (result.success) {
     title.value = "";
     description.value = "";
-    requiresAudio.value = true;
+    mediaType.value = "audio";
     emit("created");
   } else {
     error.value = result.error;

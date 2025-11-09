@@ -24,9 +24,16 @@
           />
 
           <audio-upload
-            v-if="requiresAudio"
+            v-if="mediaType === 'audio'"
             v-model="audioFile"
             @uploaded="handleAudioUploaded"
+            :session-id="sessionId"
+          />
+
+          <image-upload
+            v-if="mediaType === 'image'"
+            v-model="imageFile"
+            @uploaded="handleImageUploaded"
             :session-id="sessionId"
           />
 
@@ -66,7 +73,10 @@
           color="primary"
           :loading="loading"
           @click="handleSubmit"
-          :disabled="requiresAudio && !audioKey"
+          :disabled="
+            (mediaType === 'audio' && !audioKey) ||
+            (mediaType === 'image' && !imageKey)
+          "
         >
           {{ editingRound ? "Save Changes" : "Add Round" }}
         </v-btn>
@@ -80,6 +90,7 @@ import { ref, watch } from "vue";
 import { useSessionsStore } from "@/stores/sessions";
 import ErrorAlert from "@/components/common/ErrorAlert.vue";
 import AudioUpload from "@/components/admin/AudioUpload.vue";
+import ImageUpload from "@/components/admin/ImageUpload.vue";
 
 const props = defineProps({
   modelValue: Boolean,
@@ -91,9 +102,9 @@ const props = defineProps({
     type: Object,
     default: null,
   },
-  requiresAudio: {
-    type: Boolean,
-    default: true,
+  mediaType: {
+    type: String,
+    default: "audio", // "none", "audio", or "image"
   },
 });
 
@@ -105,6 +116,8 @@ const formRef = ref(null);
 const question = ref("");
 const audioFile = ref(null);
 const audioKey = ref(null);
+const imageFile = ref(null);
+const imageKey = ref(null);
 const answers = ref(["", "", "", ""]);
 const correctAnswer = ref(null);
 const loading = ref(false);
@@ -135,15 +148,30 @@ const handleAudioUploaded = (key) => {
   audioKey.value = key;
 };
 
+const handleImageUploaded = (key) => {
+  imageKey.value = key;
+};
+
 const handleSubmit = async () => {
   const { valid } = await formRef.value.validate();
   if (!valid) return;
 
-  // Only require audioKey if session requires audio
-  if (props.requiresAudio && !audioKey.value) return;
+  // Require media key based on media type
+  if (props.mediaType === "audio" && !audioKey.value) return;
+  if (props.mediaType === "image" && !imageKey.value) return;
 
   loading.value = true;
   error.value = null;
+
+  const roundData = {
+    question: question.value,
+    answers: answers.value,
+    correctAnswer: correctAnswer.value,
+  };
+
+  // Add media keys if present
+  if (audioKey.value) roundData.audioKey = audioKey.value;
+  if (imageKey.value) roundData.imageKey = imageKey.value;
 
   let result;
   if (props.editingRound) {
@@ -151,21 +179,11 @@ const handleSubmit = async () => {
     result = await sessionsStore.updateRound(
       props.sessionId,
       props.editingRound.roundNumber,
-      {
-        question: question.value,
-        audioKey: audioKey.value,
-        answers: answers.value,
-        correctAnswer: correctAnswer.value,
-      }
+      roundData
     );
   } else {
     // Create new round
-    result = await sessionsStore.addRound(props.sessionId, {
-      question: question.value,
-      audioKey: audioKey.value,
-      answers: answers.value,
-      correctAnswer: correctAnswer.value,
-    });
+    result = await sessionsStore.addRound(props.sessionId, roundData);
   }
 
   loading.value = false;
@@ -187,6 +205,8 @@ const resetForm = () => {
   question.value = "";
   audioFile.value = null;
   audioKey.value = null;
+  imageFile.value = null;
+  imageKey.value = null;
   answers.value = ["", "", "", ""];
   correctAnswer.value = null;
   error.value = null;

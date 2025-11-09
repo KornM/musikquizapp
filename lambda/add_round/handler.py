@@ -165,6 +165,7 @@ def lambda_handler(event, context):
         # Validate required fields
         question = body.get("question")
         audio_key = body.get("audioKey")
+        image_key = body.get("imageKey")
         answers = body.get("answers")
         correct_answer = body.get("correctAnswer")
 
@@ -176,14 +177,21 @@ def lambda_handler(event, context):
                 {"required_fields": ["question"]},
             )
 
-        # Check if session requires audio
-        requires_audio = session.get("requiresAudio", True)
-        if requires_audio and not audio_key:
+        # Check if session requires media
+        media_type = session.get("mediaType", "audio")
+        if media_type == "audio" and not audio_key:
             return error_response(
                 400,
                 "MISSING_FIELDS",
-                "audioKey is required for this session",
+                "audioKey is required for audio quiz sessions",
                 {"required_fields": ["audioKey"]},
+            )
+        elif media_type == "image" and not image_key:
+            return error_response(
+                400,
+                "MISSING_FIELDS",
+                "imageKey is required for image quiz sessions",
+                {"required_fields": ["imageKey"]},
             )
 
         if not answers or not isinstance(answers, list):
@@ -232,9 +240,11 @@ def lambda_handler(event, context):
             "createdAt": created_at,
         }
 
-        # Only add audioKey if provided
+        # Add media keys if provided
         if audio_key:
             round_item["audioKey"] = audio_key
+        if image_key:
+            round_item["imageKey"] = image_key
 
         # Store round in DynamoDB
         try:
