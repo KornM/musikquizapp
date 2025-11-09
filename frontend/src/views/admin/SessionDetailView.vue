@@ -88,11 +88,13 @@
         <RoundFormDialog
           v-model="showAddRound"
           :session-id="sessionId"
+          :requires-audio="session?.requiresAudio !== false"
           @created="handleRoundCreated"
         />
 
         <RoundFormDialog
           v-model="showEditRound"
+          :requires-audio="session?.requiresAudio !== false"
           :session-id="sessionId"
           :editing-round="editingRound"
           @created="handleRoundUpdated"

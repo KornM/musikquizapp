@@ -32,7 +32,7 @@
           </v-card>
 
           <!-- Current Round Answer Form -->
-          <v-card v-if="currentRound" class="mb-4">
+          <v-card v-if="currentRound && roundStarted" class="mb-4">
             <v-card-title>Round {{ currentRound.roundNumber }}</v-card-title>
             <v-card-text>
               <!-- Question -->
@@ -205,6 +205,7 @@ const submitting = ref(false);
 const submitted = ref(false);
 const earnedPoints = ref(null);
 const totalPoints = ref(0);
+const roundStarted = ref(false);
 
 let pollInterval = null;
 
@@ -223,6 +224,12 @@ const loadSession = async () => {
         (r) => r.roundNumber === session.value.currentRound
       );
       console.log("Found round:", round);
+
+      // Check if round has been started (has roundStartedAt timestamp)
+      const isRoundStarted = !!session.value.roundStartedAt;
+      roundStarted.value = isRoundStarted;
+      console.log("Round started:", isRoundStarted);
+
       if (
         round &&
         (!currentRound.value ||
@@ -236,6 +243,7 @@ const loadSession = async () => {
       }
     } else {
       currentRound.value = null;
+      roundStarted.value = false;
       console.log("No current round active");
     }
 

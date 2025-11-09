@@ -67,7 +67,7 @@
 
           <!-- Quiz Content -->
           <v-col cols="12" md="9">
-            <!-- Question -->
+            <!-- Question (always visible for admin) -->
             <v-card class="mb-6" elevation="4">
               <v-card-text class="text-center">
                 <div class="text-h4 font-weight-bold mb-4">
@@ -76,8 +76,12 @@
               </v-card-text>
             </v-card>
 
-            <!-- Audio Player -->
-            <v-card class="mb-6" elevation="4">
+            <!-- Audio Player (only if session requires audio) -->
+            <v-card
+              v-if="session.requiresAudio !== false"
+              class="mb-6"
+              elevation="4"
+            >
               <v-card-text class="text-center">
                 <v-icon size="64" color="primary" class="mb-4"
                   >mdi-music-circle</v-icon

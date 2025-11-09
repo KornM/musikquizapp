@@ -25,6 +25,15 @@
             :rules="[rules.required]"
             variant="outlined"
             rows="3"
+            class="mb-3"
+          />
+
+          <v-switch
+            v-model="requiresAudio"
+            label="Requires Audio"
+            color="primary"
+            hint="Enable if rounds need audio files (music quiz). Disable for text-only questions."
+            persistent-hint
           />
         </v-form>
       </v-card-text>
@@ -58,6 +67,7 @@ const sessionsStore = useSessionsStore();
 const formRef = ref(null);
 const title = ref("");
 const description = ref("");
+const requiresAudio = ref(true);
 const loading = ref(false);
 const error = ref(null);
 
@@ -75,6 +85,7 @@ const handleCreate = async () => {
   const result = await sessionsStore.createSession({
     title: title.value,
     description: description.value,
+    requiresAudio: requiresAudio.value,
   });
 
   loading.value = false;
@@ -82,6 +93,7 @@ const handleCreate = async () => {
   if (result.success) {
     title.value = "";
     description.value = "";
+    requiresAudio.value = true;
     emit("created");
   } else {
     error.value = result.error;

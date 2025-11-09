@@ -24,6 +24,7 @@
           />
 
           <audio-upload
+            v-if="requiresAudio"
             v-model="audioFile"
             @uploaded="handleAudioUploaded"
             :session-id="sessionId"
@@ -65,7 +66,7 @@
           color="primary"
           :loading="loading"
           @click="handleSubmit"
-          :disabled="!audioKey"
+          :disabled="requiresAudio && !audioKey"
         >
           {{ editingRound ? "Save Changes" : "Add Round" }}
         </v-btn>
@@ -89,6 +90,10 @@ const props = defineProps({
   editingRound: {
     type: Object,
     default: null,
+  },
+  requiresAudio: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -132,7 +137,10 @@ const handleAudioUploaded = (key) => {
 
 const handleSubmit = async () => {
   const { valid } = await formRef.value.validate();
-  if (!valid || !audioKey.value) return;
+  if (!valid) return;
+
+  // Only require audioKey if session requires audio
+  if (props.requiresAudio && !audioKey.value) return;
 
   loading.value = true;
   error.value = null;

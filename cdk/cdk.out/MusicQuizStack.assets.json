@@ -29,29 +29,29 @@
         }
       }
     },
-    "00f88f93216266ab7a265b5d48d2e0f336657920f9d7216f34f25c45d8d472d5": {
+    "e9cfcbb6770301a1df8fd948d68469953d515d0f32b83bcbba3c18d36f679cec": {
       "source": {
-        "path": "asset.00f88f93216266ab7a265b5d48d2e0f336657920f9d7216f34f25c45d8d472d5",
+        "path": "asset.e9cfcbb6770301a1df8fd948d68469953d515d0f32b83bcbba3c18d36f679cec",
         "packaging": "zip"
       },
       "destinations": {
         "967169659906-eu-central-1": {
           "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-          "objectKey": "00f88f93216266ab7a265b5d48d2e0f336657920f9d7216f34f25c45d8d472d5.zip",
+          "objectKey": "e9cfcbb6770301a1df8fd948d68469953d515d0f32b83bcbba3c18d36f679cec.zip",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
         }
       }
     },
-    "96fdb76d216cb80751cb908e66b0e48d197f45fefe22520c9b2d465c649db647": {
+    "036098c2e381645806dfa76b2b806c62b44be05ee4cf281bfbc885851f6bc3f0": {
       "source": {
-        "path": "asset.96fdb76d216cb80751cb908e66b0e48d197f45fefe22520c9b2d465c649db647",
+        "path": "asset.036098c2e381645806dfa76b2b806c62b44be05ee4cf281bfbc885851f6bc3f0",
         "packaging": "zip"
       },
       "destinations": {
         "967169659906-eu-central-1": {
           "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-          "objectKey": "96fdb76d216cb80751cb908e66b0e48d197f45fefe22520c9b2d465c649db647.zip",
+          "objectKey": "036098c2e381645806dfa76b2b806c62b44be05ee4cf281bfbc885851f6bc3f0.zip",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
         }
@@ -253,7 +253,7 @@
         }
       }
     },
-    "73f84d8ca8c1018a7ef4c60858c2b9cf3803bb565acf80198cb54cdd90230be2": {
+    "721a7bbd7e4739b662a9d4e9e2e0ec73eb94647903d51139b199a8fa2a03c2ee": {
       "source": {
         "path": "MusicQuizStack.template.json",
         "packaging": "file"
@@ -261,7 +261,7 @@
       "destinations": {
         "967169659906-eu-central-1": {
           "bucketName": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-          "objectKey": "73f84d8ca8c1018a7ef4c60858c2b9cf3803bb565acf80198cb54cdd90230be2.json",
+          "objectKey": "721a7bbd7e4739b662a9d4e9e2e0ec73eb94647903d51139b199a8fa2a03c2ee.json",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-file-publishing-role-967169659906-eu-central-1"
         }
