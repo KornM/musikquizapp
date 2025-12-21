@@ -9,6 +9,7 @@ Usage:
     python scripts/create_admin.py --username admin --password yourpassword
     python scripts/create_admin.py --username admin --password yourpassword --table-name Admins
 """
+
 import argparse
 import sys
 import os
@@ -57,7 +58,7 @@ def create_admin_user(username, password, table_name="Admins"):
     # Generate admin ID and hash password
     admin_id = str(uuid.uuid4())
     password_hash = hash_password(password)
-    created_at = str(int(datetime.utcnow().timestamp()))
+    created_at = datetime.utcnow().isoformat() + "Z"
 
     # Create admin item
     admin_item = {

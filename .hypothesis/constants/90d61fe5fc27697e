@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/common/backward_compatibility.py
+# hypothesis_version: 6.148.7
+
+[401, 'Authorization', 'Bearer ', 'INVALID_AUTH_FORMAT', 'INVALID_TOKEN', 'Invalid token', 'MISSING_TOKEN', 'TENANTS_TABLE', 'TOKEN_EXPIRED', 'Tenants', 'Token has expired', 'authorization', 'headers', 'isLegacyToken', 'role', 'sub', 'tenantId', 'userId']

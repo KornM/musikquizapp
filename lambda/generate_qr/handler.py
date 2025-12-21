@@ -6,6 +6,7 @@ The frontend can use this URL to generate a QR code for participant registration
 
 Endpoint: GET /quiz-sessions/{sessionId}/qr
 """
+
 import json
 import os
 import sys
@@ -66,13 +67,17 @@ def lambda_handler(event, context):
                 404, "SESSION_NOT_FOUND", f"Quiz session {session_id} not found"
             )
 
-        # Construct registration URL
-        registration_url = f"{FRONTEND_URL}/register?sessionId={session_id}"
+        # Construct registration URL with tenantId
+        tenant_id = session.get("tenantId", "")
+        registration_url = (
+            f"{FRONTEND_URL}/register?sessionId={session_id}&tenantId={tenant_id}"
+        )
 
         # Return success response
         response_body = {
             "registrationUrl": registration_url,
             "sessionId": session_id,
+            "tenantId": tenant_id,
             "sessionTitle": session.get("title", ""),
         }
 

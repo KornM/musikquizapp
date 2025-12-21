@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/register_global_participant/handler.py
+# hypothesis_version: 6.148.7
+
+[201, 400, 403, 404, 500, '..', 'DATABASE_ERROR', 'GlobalParticipants', 'INTERNAL_ERROR', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'TENANTS_TABLE', 'TENANT_INACTIVE', 'TENANT_NOT_FOUND', 'Tenants', 'Z', 'active', 'avatar', 'body', 'common', 'createdAt', 'name', 'name is required', 'participant', 'participantId', 'required_fields', 'status', 'statusCode', 'tenantId', 'tenantId is required', 'token', 'updatedAt', '😀']

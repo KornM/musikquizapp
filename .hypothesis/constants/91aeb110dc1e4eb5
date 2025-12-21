@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/submit_answer/handler.py
+# hypothesis_version: 6.148.7
+
+[201, 400, 404, 500, '..', ':correctAnswers', ':participantId', ':totalPoints', 'ANSWERS_TABLE', 'DATABASE_ERROR', 'GlobalParticipants', 'INTERNAL_ERROR', 'INVALID_ANSWER', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'MusicQuiz-Answers', 'MusicQuiz-Rounds', 'MusicQuiz-Sessions', 'PARTICIPANTS_TABLE', 'ParticipantIndex', 'QUIZ_ROUNDS_TABLE', 'QUIZ_SESSIONS_TABLE', 'ROUND_NOT_FOUND', 'Round not found', 'answer', 'answerId', 'body', 'common', 'correctAnswer', 'correctAnswers', 'isCorrect', 'participantId', 'participationId', 'points', 'roundNumber', 'roundStartedAt', 'sessionId', 'statusCode', 'submittedAt', 'tenantId', 'totalPoints']

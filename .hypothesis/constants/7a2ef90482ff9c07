@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/update_tenant_admin/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 404, 409, 500, '#username', ', ', '..', ':email', ':tenantId', ':updatedAt', ':username', 'ADMINS_TABLE', 'ADMIN_NOT_FOUND', 'Admin does not exist', 'Admins', 'DATABASE_ERROR', 'DUPLICATE_USERNAME', 'INTERNAL_ERROR', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'SET ', 'TENANTS_TABLE', 'TENANT_INACTIVE', 'Tenants', 'UsernameIndex', 'Z', 'active', 'adminId', 'body', 'common', 'email', 'email = :email', 'passwordHash', 'pathParameters', 'status', 'statusCode', 'tenantId', 'tenantId = :tenantId', 'username', 'username = :username']

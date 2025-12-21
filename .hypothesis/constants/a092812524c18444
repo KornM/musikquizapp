@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/get_quiz/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 404, 500, '..', ':sessionId', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'MISSING_SESSION_ID', 'MusicQuiz-Rounds', 'MusicQuiz-Sessions', 'QUIZ_ROUNDS_TABLE', 'QUIZ_SESSIONS_TABLE', 'SESSION_NOT_FOUND', 'body', 'common', 'pathParameters', 'roundNumber', 'rounds', 'sessionId', 'statusCode', 'tenantId']

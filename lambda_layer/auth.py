@@ -1,6 +1,7 @@
 """
 Authentication utility module for JWT token management and password hashing.
 """
+
 import jwt
 import os
 from datetime import datetime, timedelta
@@ -13,13 +14,14 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
 
-def generate_token(user_id, role):
+def generate_token(user_id, role, tenant_id=None):
     """
     Generate a JWT token for authenticated users.
 
     Args:
         user_id (str): Unique identifier for the user
-        role (str): User role ('admin' or 'participant')
+        role (str): User role ('admin', 'super_admin', 'tenant_admin', or 'participant')
+        tenant_id (str, optional): Tenant ID for tenant-scoped users
 
     Returns:
         str: JWT token string
@@ -33,6 +35,10 @@ def generate_token(user_id, role):
         "iat": int(now.timestamp()),
         "exp": int(expiration.timestamp()),
     }
+
+    # Add tenant_id to payload if provided
+    if tenant_id:
+        payload["tenantId"] = tenant_id
 
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return token

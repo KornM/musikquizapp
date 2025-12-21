@@ -5,6 +5,7 @@ This Lambda function handles participant answer submissions for quiz rounds.
 
 Endpoint: POST /participants/answers
 """
+
 import json
 import os
 import sys
@@ -16,13 +17,19 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 
 from cors import add_cors_headers
 from errors import error_response
-from db import get_item, put_item
+from db import get_item, put_item, query, update_item
 
 
 # Environment variables
 QUIZ_SESSIONS_TABLE = os.environ.get("QUIZ_SESSIONS_TABLE", "MusicQuiz-Sessions")
 QUIZ_ROUNDS_TABLE = os.environ.get("QUIZ_ROUNDS_TABLE", "MusicQuiz-Rounds")
 PARTICIPANTS_TABLE = os.environ.get("PARTICIPANTS_TABLE", "MusicQuiz-Participants")
+GLOBAL_PARTICIPANTS_TABLE = os.environ.get(
+    "GLOBAL_PARTICIPANTS_TABLE", "GlobalParticipants"
+)
+SESSION_PARTICIPATIONS_TABLE = os.environ.get(
+    "SESSION_PARTICIPATIONS_TABLE", "SessionParticipations"
+)
 ANSWERS_TABLE = os.environ.get("ANSWERS_TABLE", "MusicQuiz-Answers")
 
 
@@ -77,19 +84,54 @@ def lambda_handler(event, context):
                 400, "INVALID_ANSWER", "Answer must be an integer between 0 and 3"
             )
 
-        # Check if participant exists
+        # Look up SessionParticipation by participantId and sessionId
         try:
-            participant = get_item(
-                PARTICIPANTS_TABLE, {"participantId": participant_id}
-            )
-        except Exception as e:
-            print(f"DynamoDB get error: {str(e)}")
-            return error_response(
-                500, "DATABASE_ERROR", "Failed to retrieve participant"
+            participations = query(
+                SESSION_PARTICIPATIONS_TABLE,
+                "participantId = :participantId",
+                {":participantId": participant_id},
+                index_name="ParticipantIndex",
             )
 
-        if not participant:
-            return error_response(404, "PARTICIPANT_NOT_FOUND", "Participant not found")
+            # Find the participation for this specific session
+            participation = None
+            for p in participations:
+                if p.get("sessionId") == session_id:
+                    participation = p
+                    break
+
+            if not participation:
+                return error_response(
+                    404,
+                    "PARTICIPATION_NOT_FOUND",
+                    "Participant has not joined this session",
+                )
+
+            participation_id = participation.get("participationId")
+            tenant_id = participation.get("tenantId")
+
+        except Exception as e:
+            print(f"DynamoDB query error: {str(e)}")
+            return error_response(
+                500, "DATABASE_ERROR", "Failed to retrieve session participation"
+            )
+
+        # Check session status - reject answers for completed sessions
+        try:
+            session = get_item(QUIZ_SESSIONS_TABLE, {"sessionId": session_id})
+            if not session:
+                return error_response(404, "SESSION_NOT_FOUND", "Session not found")
+
+            session_status = session.get("status", "draft")
+            if session_status == "completed":
+                return error_response(
+                    403,
+                    "SESSION_COMPLETED",
+                    "Cannot submit answers to a completed session",
+                )
+        except Exception as e:
+            print(f"DynamoDB get error for session: {str(e)}")
+            return error_response(500, "DATABASE_ERROR", "Failed to retrieve session")
 
         # Check if round exists
         try:
@@ -133,14 +175,16 @@ def lambda_handler(event, context):
                 print(f"Error calculating points: {str(e)}")
                 points = 5  # Default points if calculation fails
 
-        # Create answer record
+        # Create answer record with participationId and tenantId
         answer_id = str(uuid.uuid4())
         submitted_at = str(int(datetime.utcnow().timestamp()))
 
         answer_item = {
             "answerId": answer_id,
             "participantId": participant_id,
+            "participationId": participation_id,
             "sessionId": session_id,
+            "tenantId": tenant_id,
             "roundNumber": round_number,
             "answer": answer,
             "isCorrect": is_correct,
@@ -154,6 +198,28 @@ def lambda_handler(event, context):
         except Exception as e:
             print(f"DynamoDB put error: {str(e)}")
             return error_response(500, "DATABASE_ERROR", "Failed to submit answer")
+
+        # Update SessionParticipation with new totalPoints and correctAnswers
+        try:
+            current_total_points = participation.get("totalPoints", 0)
+            current_correct_answers = participation.get("correctAnswers", 0)
+
+            new_total_points = current_total_points + points
+            new_correct_answers = current_correct_answers + (1 if is_correct else 0)
+
+            update_item(
+                SESSION_PARTICIPATIONS_TABLE,
+                {"participationId": participation_id},
+                "SET totalPoints = :totalPoints, correctAnswers = :correctAnswers",
+                {
+                    ":totalPoints": new_total_points,
+                    ":correctAnswers": new_correct_answers,
+                },
+            )
+        except Exception as e:
+            print(f"DynamoDB update error: {str(e)}")
+            # Don't fail the request if score update fails, answer is already stored
+            print("Warning: Failed to update participation scores")
 
         # Return success response
         response = {

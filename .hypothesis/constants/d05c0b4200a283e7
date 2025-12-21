@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/create_tenant/../common/db.py
+# hypothesis_version: 6.148.7
+
+['ALL_NEW', 'Attributes', 'DeleteItem', 'ExclusiveStartKey', 'FilterExpression', 'GetItem', 'IndexName', 'Item', 'Items', 'Key', 'LastEvaluatedKey', 'PutItem', 'Query', 'ReturnValues', 'Scan', 'UpdateExpression', 'UpdateItem', 'dynamodb', 'super_admin']

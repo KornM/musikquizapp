@@ -1,6 +1,7 @@
 """
 Authentication utility module for JWT token management and password hashing.
 """
+
 import jwt
 import os
 from datetime import datetime, timedelta
@@ -13,13 +14,14 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
 
-def generate_token(user_id, role):
+def generate_token(user_id, role, tenant_id=None):
     """
     Generate a JWT token for authenticated users.
 
     Args:
         user_id (str): Unique identifier for the user
-        role (str): User role ('admin' or 'participant')
+        role (str): User role ('admin', 'super_admin', 'tenant_admin', or 'participant')
+        tenant_id (str, optional): Tenant ID for tenant-scoped users
 
     Returns:
         str: JWT token string
@@ -34,16 +36,21 @@ def generate_token(user_id, role):
         "exp": int(expiration.timestamp()),
     }
 
+    # Add tenant_id to payload if provided
+    if tenant_id:
+        payload["tenantId"] = tenant_id
+
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return token
 
 
-def validate_token(token):
+def validate_token(token, allow_legacy=True):
     """
     Validate and decode a JWT token.
 
     Args:
         token (str): JWT token string
+        allow_legacy (bool): If True, accept tokens without tenantId (backward compatibility)
 
     Returns:
         dict: Decoded token payload if valid
@@ -54,6 +61,12 @@ def validate_token(token):
     """
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+
+        # For backward compatibility, legacy tokens without tenantId are still valid
+        # The calling code can add a default tenantId if needed
+        if not allow_legacy and "tenantId" not in payload:
+            raise jwt.InvalidTokenError("Token missing tenant context")
+
         return payload
     except jwt.ExpiredSignatureError:
         raise jwt.ExpiredSignatureError("Token has expired")

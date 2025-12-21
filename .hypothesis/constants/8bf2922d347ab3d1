@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/create_tenant/handler.py
+# hypothesis_version: 6.148.7
+
+[201, 400, 500, '..', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'TENANTS_TABLE', 'Tenants', 'Z', 'active', 'body', 'common', 'createdAt', 'description', 'name', 'required_fields', 'settings', 'status', 'statusCode', 'tenantId', 'updatedAt']

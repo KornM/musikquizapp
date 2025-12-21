@@ -6,6 +6,7 @@ It validates the admin JWT token and performs cascading deletion.
 
 Endpoint: DELETE /admin/quiz-sessions/{sessionId}
 """
+
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from auth import validate_token
 from cors import add_cors_headers
 from errors import error_response
 from db import get_item, delete_item, query
+from tenant_middleware import validate_tenant_access
 import jwt
 import boto3
 from botocore.exceptions import ClientError
@@ -76,10 +78,14 @@ def lambda_handler(event, context):
             return error_response(401, "INVALID_TOKEN", "Invalid token")
 
         # Check if user has admin role
-        if payload.get("role") != "admin":
+        role = payload.get("role", "admin")
+        if role not in ["admin", "tenant_admin", "super_admin"]:
             return error_response(
                 403, "INSUFFICIENT_PERMISSIONS", "Admin role required"
             )
+
+        # Extract tenant ID from token
+        admin_tenant_id = payload.get("tenantId")
 
         # Extract session ID from path parameters
         path_parameters = event.get("pathParameters", {})
@@ -103,6 +109,13 @@ def lambda_handler(event, context):
             return error_response(
                 404, "SESSION_NOT_FOUND", f"Quiz session {session_id} not found"
             )
+
+        # Validate tenant access
+        session_tenant_id = session.get("tenantId")
+        if session_tenant_id:
+            access_error = validate_tenant_access(tenant_context, session_tenant_id)
+            if access_error:
+                return access_error
 
         # Get all rounds for this session
         try:

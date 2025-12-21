@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/update_global_participant/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 403, 500, '#name', '#name = :name', ', ', '..', ':avatar', ':name', ':updatedAt', 'DATABASE_ERROR', 'GlobalParticipants', 'INTERNAL_ERROR', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'SET ', 'Z', 'avatar', 'avatar = :avatar', 'body', 'common', 'createdAt', 'name', 'participant', 'participantId', 'pathParameters', 'statusCode', 'tenantId', 'updatedAt']

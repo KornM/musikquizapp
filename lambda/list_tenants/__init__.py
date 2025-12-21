@@ -1,0 +1,1 @@
+# List tenants Lambda function

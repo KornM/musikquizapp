@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/update_global_participant/../common/participant_middleware.py
+# hypothesis_version: 6.148.7
+
+[401, 403, 404, 500, 'Authorization', 'Bearer ', 'CROSS_TENANT_ACCESS', 'DATABASE_ERROR', 'GlobalParticipants', 'INVALID_AUTH_FORMAT', 'INVALID_TOKEN', 'Invalid token', 'MISSING_TOKEN', 'TOKEN_EXPIRED', 'Token has expired', 'authorization', 'headers', 'participant', 'participantId', 'role', 'sub', 'tenantId']

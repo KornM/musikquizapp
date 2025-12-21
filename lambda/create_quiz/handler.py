@@ -2,10 +2,12 @@
 Create Quiz Session Lambda Handler
 
 This Lambda function handles creation of new quiz sessions by authenticated admins.
-It validates the admin JWT token and creates a new session in the DynamoDB QuizSessions table.
+It validates the admin JWT token, extracts tenant context, and creates a new session
+in the DynamoDB QuizSessions table with automatic tenant association.
 
 Endpoint: POST /admin/quiz-sessions
 """
+
 import json
 import os
 import sys
@@ -15,11 +17,10 @@ from datetime import datetime
 # Add common utilities to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 
-from auth import validate_token
 from cors import add_cors_headers
 from errors import error_response
 from db import put_item
-import jwt
+from tenant_middleware import require_tenant_admin
 
 
 # Environment variables
@@ -44,6 +45,7 @@ def lambda_handler(event, context):
         Success (201):
             {
                 "sessionId": "uuid",
+                "tenantId": "uuid",
                 "title": "Quiz Title",
                 "description": "Quiz Description",
                 "createdAt": 1234567890,
@@ -52,46 +54,34 @@ def lambda_handler(event, context):
                 "status": "draft"
             }
 
-        Error (400): Invalid request body
+        Error (400): Invalid request body or inactive tenant
         Error (401): Missing or invalid token
         Error (403): Insufficient permissions
+        Error (404): Tenant not found
         Error (500): Internal server error
     """
     try:
-        # Validate Authorization header
-        headers = event.get("headers", {})
-        auth_header = headers.get("Authorization") or headers.get("authorization")
+        # Validate admin authentication and extract tenant context
+        tenant_context, error = require_tenant_admin(event)
+        if error:
+            return error
 
-        if not auth_header:
+        admin_id = tenant_context.get("adminId")
+        tenant_id = tenant_context.get("tenantId")
+        role = tenant_context.get("role")
+
+        # For tenant admins, tenant_id is required and already validated
+        # For super admins, we need a tenant_id to be provided or use a default
+        if not tenant_id and role == "super_admin":
+            # Super admins must specify a tenant when creating sessions
+            # This could be enhanced to accept tenantId in request body
             return error_response(
-                401, "MISSING_TOKEN", "Authorization header is required"
+                400,
+                "MISSING_TENANT_ID",
+                "Super admins must specify a tenant ID for session creation",
             )
 
-        # Extract token from "Bearer <token>" format
-        if not auth_header.startswith("Bearer "):
-            return error_response(
-                401,
-                "INVALID_AUTH_FORMAT",
-                "Authorization header must be 'Bearer <token>'",
-            )
-
-        token = auth_header[7:]  # Remove "Bearer " prefix
-
-        # Validate JWT token
-        try:
-            payload = validate_token(token)
-        except jwt.ExpiredSignatureError:
-            return error_response(401, "TOKEN_EXPIRED", "Token has expired")
-        except jwt.InvalidTokenError:
-            return error_response(401, "INVALID_TOKEN", "Invalid token")
-
-        # Check if user has admin role
-        if payload.get("role") != "admin":
-            return error_response(
-                403, "INSUFFICIENT_PERMISSIONS", "Admin role required"
-            )
-
-        admin_id = payload.get("sub")
+        # Tenant is already validated by require_tenant_admin if tenant_id exists
 
         # Parse request body
         if not event.get("body"):
@@ -133,9 +123,10 @@ def lambda_handler(event, context):
         session_id = str(uuid.uuid4())
         created_at = str(int(datetime.utcnow().timestamp()))
 
-        # Create session item
+        # Create session item with tenant context
         session_item = {
             "sessionId": session_id,
+            "tenantId": tenant_id,  # Automatically add tenantId from admin's context
             "title": title,
             "description": description,
             "createdBy": admin_id,

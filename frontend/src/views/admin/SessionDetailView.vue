@@ -83,6 +83,84 @@
               </v-alert>
             </v-card-text>
           </v-card>
+
+          <!-- Participants Management -->
+          <v-card class="mt-4">
+            <ParticipantManagement
+              :session-id="sessionId"
+              @updated="handleParticipantsUpdated"
+            />
+          </v-card>
+
+          <!-- Scoreboard -->
+          <v-card class="mt-4">
+            <v-card-title class="d-flex align-center">
+              <v-icon class="mr-2">mdi-trophy</v-icon>
+              <span>Live Scoreboard</span>
+              <v-spacer />
+              <v-btn
+                icon
+                size="small"
+                @click="refreshScoreboard"
+                :loading="loadingScoreboard"
+              >
+                <v-icon>mdi-refresh</v-icon>
+              </v-btn>
+            </v-card-title>
+
+            <v-card-text>
+              <loading-spinner
+                v-if="loadingScoreboard"
+                message="Loading scoreboard..."
+              />
+
+              <error-alert
+                v-else-if="scoreboardError"
+                :message="scoreboardError"
+              />
+
+              <div v-else-if="scoreboard && scoreboard.length > 0">
+                <v-list>
+                  <v-list-item
+                    v-for="(participant, index) in scoreboard"
+                    :key="participant.participantId"
+                    class="scoreboard-item"
+                  >
+                    <template v-slot:prepend>
+                      <v-avatar :color="getRankColor(index)" size="40">
+                        <span class="text-h6">{{ index + 1 }}</span>
+                      </v-avatar>
+                    </template>
+
+                    <v-list-item-title class="d-flex align-center">
+                      <span class="text-h6 mr-2">{{ participant.avatar }}</span>
+                      <span class="font-weight-bold">{{
+                        participant.name
+                      }}</span>
+                    </v-list-item-title>
+
+                    <v-list-item-subtitle>
+                      {{ participant.correctAnswers }} correct answers
+                    </v-list-item-subtitle>
+
+                    <template v-slot:append>
+                      <v-chip color="primary" size="large">
+                        <span class="text-h6">{{
+                          participant.totalPoints
+                        }}</span>
+                        <span class="text-caption ml-1">pts</span>
+                      </v-chip>
+                    </template>
+                  </v-list-item>
+                </v-list>
+              </div>
+
+              <v-alert v-else type="info">
+                No participants have joined yet. Share the QR code to get
+                started!
+              </v-alert>
+            </v-card-text>
+          </v-card>
         </div>
 
         <RoundFormDialog
@@ -119,6 +197,7 @@ import SuccessSnackbar from "@/components/common/SuccessSnackbar.vue";
 import RoundList from "@/components/admin/RoundList.vue";
 import RoundFormDialog from "@/components/admin/RoundFormDialog.vue";
 import QRCodeModal from "@/components/admin/QRCodeModal.vue";
+import ParticipantManagement from "@/components/admin/ParticipantManagement.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -133,6 +212,9 @@ const editingRound = ref(null);
 const showQRDialog = ref(false);
 const showSuccess = ref(false);
 const successMessage = ref("");
+const scoreboard = ref([]);
+const loadingScoreboard = ref(false);
+const scoreboardError = ref(null);
 
 const session = computed(() => sessionsStore.currentSession);
 
@@ -156,8 +238,32 @@ onMounted(async () => {
 
   if (!result.success) {
     error.value = result.error;
+  } else {
+    // Load scoreboard after session loads
+    refreshScoreboard();
   }
 });
+
+const refreshScoreboard = async () => {
+  loadingScoreboard.value = true;
+  scoreboardError.value = null;
+  try {
+    const response = await api.getScoreboard(sessionId);
+    scoreboard.value = response.data.participants || [];
+  } catch (err) {
+    scoreboardError.value =
+      err.response?.data?.error?.message || "Failed to load scoreboard";
+  } finally {
+    loadingScoreboard.value = false;
+  }
+};
+
+const getRankColor = (index) => {
+  if (index === 0) return "gold";
+  if (index === 1) return "silver";
+  if (index === 2) return "#CD7F32"; // bronze
+  return "grey";
+};
 
 const handleRoundCreated = () => {
   showAddRound.value = false;
@@ -209,7 +315,23 @@ const handleResetPoints = async () => {
   }
 };
 
+const handleParticipantsUpdated = () => {
+  // Refresh session data and scoreboard when participants are updated
+  sessionsStore.fetchSession(sessionId);
+  refreshScoreboard();
+};
+
 const presentSession = () => {
   router.push(`/admin/sessions/${sessionId}/present`);
 };
 </script>
+
+<style scoped>
+.scoreboard-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.scoreboard-item:last-child {
+  border-bottom: none;
+}
+</style>

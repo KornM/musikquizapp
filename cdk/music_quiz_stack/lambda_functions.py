@@ -1,6 +1,7 @@
 """
 Lambda function constructs for Music Quiz application.
 """
+
 from aws_cdk import aws_lambda as lambda_, Duration, BundlingOptions
 from constructs import Construct
 import os
@@ -18,6 +19,9 @@ class LambdaFunctions(Construct):
         quiz_rounds_table,
         participants_table,
         answers_table,
+        tenants_table,
+        global_participants_table,
+        session_participations_table,
         audio_bucket,
         cloudfront_domain: str = None,
         **kwargs,
@@ -31,6 +35,9 @@ class LambdaFunctions(Construct):
             "QUIZ_ROUNDS_TABLE": quiz_rounds_table.table_name,
             "PARTICIPANTS_TABLE": participants_table.table_name,
             "ANSWERS_TABLE": answers_table.table_name,
+            "TENANTS_TABLE": tenants_table.table_name,
+            "GLOBAL_PARTICIPANTS_TABLE": global_participants_table.table_name,
+            "SESSION_PARTICIPATIONS_TABLE": session_participations_table.table_name,
             "AUDIO_BUCKET": audio_bucket.bucket_name,
             "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",  # Should use Secrets Manager
             "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
@@ -93,6 +100,9 @@ class LambdaFunctions(Construct):
             memory_size=256,
         )
         quiz_sessions_table.grant_write_data(self.create_quiz)
+        tenants_table.grant_read_data(
+            self.create_quiz
+        )  # Need to validate tenant is active
 
         # Add Quiz Round Lambda
         self.add_round = lambda_.Function(
@@ -127,6 +137,9 @@ class LambdaFunctions(Construct):
         )
         audio_bucket.grant_write(self.upload_audio)
         audio_bucket.grant_put(self.upload_audio)
+        quiz_sessions_table.grant_read_data(
+            self.upload_audio
+        )  # Need to read session for tenant validation
 
         # Upload Image Lambda
         self.upload_image = lambda_.Function(
@@ -144,6 +157,9 @@ class LambdaFunctions(Construct):
         )
         audio_bucket.grant_write(self.upload_image)
         audio_bucket.grant_put(self.upload_image)
+        quiz_sessions_table.grant_read_data(
+            self.upload_image
+        )  # Need to read session for tenant validation
 
         # Get Quiz Session Lambda
         self.get_quiz = lambda_.Function(
@@ -192,8 +208,12 @@ class LambdaFunctions(Construct):
             timeout=Duration.seconds(30),
             memory_size=256,
         )
-        quiz_sessions_table.grant_read_data(self.register_participant)
-        participants_table.grant_write_data(self.register_participant)
+        quiz_sessions_table.grant_read_data(
+            self.register_participant
+        )  # Validates session exists
+        participants_table.grant_read_write_data(
+            self.register_participant
+        )  # Queries for duplicates and creates participant
 
         # Get Audio Lambda
         self.get_audio = lambda_.Function(
@@ -245,6 +265,22 @@ class LambdaFunctions(Construct):
         quiz_rounds_table.grant_read_write_data(self.delete_session)
         audio_bucket.grant_delete(self.delete_session)
 
+        # Complete Session Lambda
+        self.complete_session = lambda_.Function(
+            self,
+            "CompleteSessionFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "complete_session")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        quiz_sessions_table.grant_read_write_data(self.complete_session)
+
         # Delete Round Lambda
         self.delete_round = lambda_.Function(
             self,
@@ -294,9 +330,16 @@ class LambdaFunctions(Construct):
             timeout=Duration.seconds(30),
             memory_size=256,
         )
-        participants_table.grant_read_data(self.submit_answer)
-        quiz_rounds_table.grant_read_data(self.submit_answer)
-        answers_table.grant_write_data(self.submit_answer)
+        quiz_sessions_table.grant_read_data(
+            self.submit_answer
+        )  # Reads session for round start time
+        quiz_rounds_table.grant_read_data(
+            self.submit_answer
+        )  # Validates round and gets correct answer
+        session_participations_table.grant_read_write_data(
+            self.submit_answer
+        )  # Queries participation and updates scores
+        answers_table.grant_read_write_data(self.submit_answer)  # Writes answer records
 
         # Get Scoreboard Lambda
         self.get_scoreboard = lambda_.Function(
@@ -312,9 +355,18 @@ class LambdaFunctions(Construct):
             timeout=Duration.seconds(30),
             memory_size=256,
         )
-        quiz_sessions_table.grant_read_data(self.get_scoreboard)
-        participants_table.grant_read_data(self.get_scoreboard)
-        answers_table.grant_read_data(self.get_scoreboard)
+        quiz_sessions_table.grant_read_data(
+            self.get_scoreboard
+        )  # Validates session exists and gets tenantId
+        session_participations_table.grant_read_data(
+            self.get_scoreboard
+        )  # Queries participations for scores
+        global_participants_table.grant_read_data(
+            self.get_scoreboard
+        )  # Gets participant names and avatars
+        participants_table.grant_read_data(
+            self.get_scoreboard
+        )  # Fallback for legacy participants
 
         # Reset Points Lambda
         self.reset_points = lambda_.Function(
@@ -331,6 +383,9 @@ class LambdaFunctions(Construct):
             memory_size=256,
         )
         answers_table.grant_read_write_data(self.reset_points)
+        quiz_sessions_table.grant_read_data(
+            self.reset_points
+        )  # Need to read session for tenant validation
 
         # Clear Participants Lambda
         self.clear_participants = lambda_.Function(
@@ -348,3 +403,277 @@ class LambdaFunctions(Construct):
         )
         participants_table.grant_read_write_data(self.clear_participants)
         answers_table.grant_read_write_data(self.clear_participants)
+        quiz_sessions_table.grant_read_data(
+            self.clear_participants
+        )  # Need to read session for tenant validation
+
+        # Get Participants Lambda
+        self.get_participants = lambda_.Function(
+            self,
+            "GetParticipantsFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "get_participants")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        participants_table.grant_read_data(self.get_participants)
+        session_participations_table.grant_read_data(self.get_participants)
+        global_participants_table.grant_read_data(self.get_participants)
+        quiz_sessions_table.grant_read_data(self.get_participants)
+
+        # Update Participant Lambda
+        self.update_participant = lambda_.Function(
+            self,
+            "UpdateParticipantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "update_participant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        participants_table.grant_read_write_data(self.update_participant)
+        quiz_sessions_table.grant_read_data(
+            self.update_participant
+        )  # Need to read session for tenant validation
+
+        # Delete Participant Lambda
+        self.delete_participant = lambda_.Function(
+            self,
+            "DeleteParticipantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "delete_participant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        participants_table.grant_read_write_data(self.delete_participant)
+        answers_table.grant_read_write_data(self.delete_participant)
+        quiz_sessions_table.grant_read_data(
+            self.delete_participant
+        )  # Need to read session for tenant validation
+
+        # Create Tenant Lambda
+        self.create_tenant = lambda_.Function(
+            self,
+            "CreateTenantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "create_tenant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        tenants_table.grant_write_data(self.create_tenant)
+
+        # List Tenants Lambda
+        self.list_tenants = lambda_.Function(
+            self,
+            "ListTenantsFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "list_tenants")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        tenants_table.grant_read_data(self.list_tenants)
+
+        # Update Tenant Lambda
+        self.update_tenant = lambda_.Function(
+            self,
+            "UpdateTenantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "update_tenant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        tenants_table.grant_read_write_data(self.update_tenant)
+
+        # Delete Tenant Lambda
+        self.delete_tenant = lambda_.Function(
+            self,
+            "DeleteTenantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "delete_tenant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        tenants_table.grant_read_write_data(self.delete_tenant)
+
+        # Create Tenant Admin Lambda
+        self.create_tenant_admin = lambda_.Function(
+            self,
+            "CreateTenantAdminFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "create_tenant_admin")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        admins_table.grant_read_write_data(self.create_tenant_admin)
+        tenants_table.grant_read_data(self.create_tenant_admin)
+
+        # List Tenant Admins Lambda
+        self.list_tenant_admins = lambda_.Function(
+            self,
+            "ListTenantAdminsFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "list_tenant_admins")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        admins_table.grant_read_data(self.list_tenant_admins)
+
+        # Update Tenant Admin Lambda
+        self.update_tenant_admin = lambda_.Function(
+            self,
+            "UpdateTenantAdminFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "update_tenant_admin")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        admins_table.grant_read_write_data(self.update_tenant_admin)
+        tenants_table.grant_read_data(self.update_tenant_admin)
+
+        # Delete Tenant Admin Lambda
+        self.delete_tenant_admin = lambda_.Function(
+            self,
+            "DeleteTenantAdminFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "delete_tenant_admin")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        admins_table.grant_read_write_data(self.delete_tenant_admin)
+
+        # Reset Admin Password Lambda
+        self.reset_password_admin = lambda_.Function(
+            self,
+            "ResetPasswordAdminFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "reset_password_admin")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        admins_table.grant_read_write_data(self.reset_password_admin)
+
+        # Register Global Participant Lambda
+        self.register_global_participant = lambda_.Function(
+            self,
+            "RegisterGlobalParticipantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "register_global_participant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        tenants_table.grant_read_data(self.register_global_participant)
+        global_participants_table.grant_write_data(self.register_global_participant)
+
+        # Get Global Participant Lambda
+        self.get_global_participant = lambda_.Function(
+            self,
+            "GetGlobalParticipantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "get_global_participant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        global_participants_table.grant_read_data(self.get_global_participant)
+
+        # Update Global Participant Lambda
+        self.update_global_participant = lambda_.Function(
+            self,
+            "UpdateGlobalParticipantFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "update_global_participant")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        global_participants_table.grant_read_write_data(self.update_global_participant)
+
+        # Join Session Lambda
+        self.join_session = lambda_.Function(
+            self,
+            "JoinSessionFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "join_session")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        quiz_sessions_table.grant_read_data(self.join_session)
+        global_participants_table.grant_read_data(self.join_session)
+        session_participations_table.grant_read_write_data(self.join_session)

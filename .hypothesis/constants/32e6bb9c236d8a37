@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/common/auth.py
+# hypothesis_version: 6.148.7
+
+['HS256', 'Invalid token', 'JWT_SECRET', 'Token has expired', 'exp', 'iat', 'role', 'sub', 'tenantId']

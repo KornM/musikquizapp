@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-deploy-role-967169659906-eu-central-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-cfn-exec-role-967169659906-eu-central-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-967169659906-eu-central-1/ff8a5c52c214db52652c878e4e92a4be7e2e0bce2a3c4ff0fef87898f6f9f0f8.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-967169659906-eu-central-1/92488476e2d9a978bc6b7d24ef5b3f17ad17950100fcd39ad5c0a39328bc08ab.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -34,6 +34,20 @@
         "MusicQuizStack.assets"
       ],
       "metadata": {
+        "/MusicQuizStack/Database/TenantsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DatabaseTenantsTableCCEF727D"
+            }
+          }
+        ],
+        "/MusicQuizStack/Database/TenantsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseTenantsTableCCEF727D"
+          }
+        ],
         "/MusicQuizStack/Database/AdminsTable": [
           {
             "type": "aws:cdk:hasPhysicalName",
@@ -74,6 +88,34 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "DatabaseQuizRoundsTable727C8ABB"
+          }
+        ],
+        "/MusicQuizStack/Database/GlobalParticipantsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+            }
+          }
+        ],
+        "/MusicQuizStack/Database/GlobalParticipantsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseGlobalParticipantsTable0DB1C7D4"
+          }
+        ],
+        "/MusicQuizStack/Database/SessionParticipationsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DatabaseSessionParticipationsTable031837B3"
+            }
+          }
+        ],
+        "/MusicQuizStack/Database/SessionParticipationsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseSessionParticipationsTable031837B3"
           }
         ],
         "/MusicQuizStack/Database/ParticipantsTable": [
@@ -320,6 +362,24 @@
             "data": "LambdaFunctionsDeleteSessionFunctionCA3FAA4C"
           }
         ],
+        "/MusicQuizStack/LambdaFunctions/CompleteSessionFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCompleteSessionFunctionServiceRoleD043A5AF"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CompleteSessionFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCompleteSessionFunctionServiceRoleDefaultPolicy93C35F30"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CompleteSessionFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCompleteSessionFunction8B7A45CB"
+          }
+        ],
         "/MusicQuizStack/LambdaFunctions/DeleteRoundFunction/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -428,6 +488,294 @@
             "data": "LambdaFunctionsClearParticipantsFunctionB07DBE41"
           }
         ],
+        "/MusicQuizStack/LambdaFunctions/GetParticipantsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGetParticipantsFunctionServiceRoleAD9F030D"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/GetParticipantsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGetParticipantsFunctionServiceRoleDefaultPolicy1044CBA6"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/GetParticipantsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGetParticipantsFunctionBAD55093"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateParticipantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateParticipantFunctionServiceRole6B353E4C"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateParticipantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateParticipantFunctionServiceRoleDefaultPolicy7C600931"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateParticipantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateParticipantFunction747343C2"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteParticipantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteParticipantFunctionServiceRole61972E3B"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteParticipantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteParticipantFunctionServiceRoleDefaultPolicy720114E2"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteParticipantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteParticipantFunction0A357007"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CreateTenantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCreateTenantFunctionServiceRole28523C09"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CreateTenantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCreateTenantFunctionServiceRoleDefaultPolicyD133E0D6"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CreateTenantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCreateTenantFunction9C152250"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ListTenantsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsListTenantsFunctionServiceRole3CB4AD7C"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ListTenantsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsListTenantsFunctionServiceRoleDefaultPolicyC2E38426"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ListTenantsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsListTenantsFunction00691DB7"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateTenantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateTenantFunctionServiceRole2A5AD1F3"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateTenantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateTenantFunctionServiceRoleDefaultPolicy493FE75C"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateTenantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateTenantFunction378AFD33"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteTenantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteTenantFunctionServiceRole44707942"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteTenantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteTenantFunctionServiceRoleDefaultPolicyF3948913"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteTenantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteTenantFunction7C672802"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CreateTenantAdminFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCreateTenantAdminFunctionServiceRole9A342F1F"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CreateTenantAdminFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCreateTenantAdminFunctionServiceRoleDefaultPolicy364F7C00"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/CreateTenantAdminFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCreateTenantAdminFunction46EEC7EE"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ListTenantAdminsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsListTenantAdminsFunctionServiceRole995882FE"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ListTenantAdminsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsListTenantAdminsFunctionServiceRoleDefaultPolicy2E8CAD12"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ListTenantAdminsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsListTenantAdminsFunction64413C7C"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateTenantAdminFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleAEDBA09B"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateTenantAdminFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleDefaultPolicyBBE9A8BB"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateTenantAdminFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateTenantAdminFunction0CD2C7DB"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteTenantAdminFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteTenantAdminFunctionServiceRole750962E8"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteTenantAdminFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteTenantAdminFunctionServiceRoleDefaultPolicyEC9771C0"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/DeleteTenantAdminFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsDeleteTenantAdminFunctionEF5EA1F3"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ResetPasswordAdminFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsResetPasswordAdminFunctionServiceRole8B298B73"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ResetPasswordAdminFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsResetPasswordAdminFunctionServiceRoleDefaultPolicy41C49932"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/ResetPasswordAdminFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsResetPasswordAdminFunction53FD33E2"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/RegisterGlobalParticipantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRole632C1548"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/RegisterGlobalParticipantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRoleDefaultPolicyD21F5436"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/RegisterGlobalParticipantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsRegisterGlobalParticipantFunction643487BD"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/GetGlobalParticipantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleADE7EFA7"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/GetGlobalParticipantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleDefaultPolicy377AC260"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/GetGlobalParticipantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGetGlobalParticipantFunction43520741"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateGlobalParticipantFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleBB4935CD"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateGlobalParticipantFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleDefaultPolicy378BB48E"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateGlobalParticipantFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateGlobalParticipantFunctionA1644C4C"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/JoinSessionFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsJoinSessionFunctionServiceRoleEC82390A"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/JoinSessionFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsJoinSessionFunctionServiceRoleDefaultPolicy7235311C"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/JoinSessionFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsJoinSessionFunction6C175753"
+          }
+        ],
         "/MusicQuizStack/Api/MusicQuizApi/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -449,7 +797,7 @@
         "/MusicQuizStack/Api/MusicQuizApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ApiMusicQuizApiDeployment9AF6ED9C0d8788ebf7b9f1a80eb964316901a5f8"
+            "data": "ApiMusicQuizApiDeployment9AF6ED9C5a008ea7448012aacb3fa0f002bcfdd6"
           }
         ],
         "/MusicQuizStack/Api/MusicQuizApi/DeploymentStage.prod/Resource": [
@@ -570,6 +918,36 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiMusicQuizApiadminquizsessionssessionIdDELETEF72629B5"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdcompleteA2E48DF8"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdcompleteOPTIONSB6AE550B"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..admin.quiz-sessions.{sessionId}.complete": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdcompletePOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTadminquizsessionssessionIdcomplete92E2D03C"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..admin.quiz-sessions.{sessionId}.complete": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdcompletePOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTadminquizsessionssessionIdcomplete3A6581A5"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdcompletePOST1E8E81F1"
           }
         ],
         "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/rounds/Resource": [
@@ -704,6 +1082,24 @@
             "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsOPTIONS2EB76776"
           }
         ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..admin.quiz-sessions.{sessionId}.participants": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETadminquizsessionssessionIdparticipants24777918"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..admin.quiz-sessions.{sessionId}.participants": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETadminquizsessionssessionIdparticipants02339377"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsGETF1C79ECA"
+          }
+        ],
         "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/DELETE/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..admin.quiz-sessions.{sessionId}.participants": [
           {
             "type": "aws:cdk:logicalId",
@@ -720,6 +1116,54 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsDELETE667F7FA6"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantId6D798286"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdOPTIONSE7D588D9"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..admin.quiz-sessions.{sessionId}.participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTadminquizsessionssessionIdparticipantsparticipantId083E42FD"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..admin.quiz-sessions.{sessionId}.participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTadminquizsessionssessionIdparticipantsparticipantId3317BB54"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/PUT/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdPUT83CA26E7"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/DELETE/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..admin.quiz-sessions.{sessionId}.participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdDELETEApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFDELETEadminquizsessionssessionIdparticipantsparticipantIdDCDDF614"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/DELETE/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..admin.quiz-sessions.{sessionId}.participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdDELETEApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFDELETEadminquizsessionssessionIdparticipantsparticipantIdF3443371"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdDELETE2209080E"
           }
         ],
         "/MusicQuizStack/Api/MusicQuizApi/Default/admin/audio/Resource": [
@@ -902,6 +1346,60 @@
             "data": "ApiMusicQuizApiquizsessionssessionIdscoreboardGET70CB617C"
           }
         ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessions59E0BC24"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionsOPTIONSE3F26714"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionssessionId84B18FDD"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionssessionIdOPTIONS9206E2D3"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionssessionIdjoin963F0B8B"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionssessionIdjoinOPTIONS0EA5BA24"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..sessions.{sessionId}.join": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionssessionIdjoinPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsessionssessionIdjoinF61EFB5C"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..sessions.{sessionId}.join": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionssessionIdjoinPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsessionssessionIdjoinFBDB9146"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisessionssessionIdjoinPOSTEA18F600"
+          }
+        ],
         "/MusicQuizStack/Api/MusicQuizApi/Default/participants/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -942,6 +1440,54 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiMusicQuizApiparticipantsregisterPOSTD28566A8"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantId30AECF00"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantIdOPTIONS8BC7A0BC"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantIdGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETparticipantsparticipantId3295DE08"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantIdGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETparticipantsparticipantId69B7FF5F"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantIdGET5098DCFC"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTparticipantsparticipantIdE9A624BB"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..participants.{participantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTparticipantsparticipantId96BDF3A4"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/PUT/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiparticipantsparticipantIdPUT1BA7C059"
           }
         ],
         "/MusicQuizStack/Api/MusicQuizApi/Default/participants/answers/Resource": [
@@ -1002,6 +1548,252 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiMusicQuizApiaudioGETBAE7E460"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminF5CB05FE"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminOPTIONS9AD0FDD4"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsC6AC0921"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsOPTIONS8C11AD07"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenants313901C9"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenants1BB26D26"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsPOST6631A5FB"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenants6EF3F34B"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenants8CAB355E"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantsGETF73022D5"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantId621D586D"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdOPTIONSD5B2B984"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.tenants.{tenantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadmintenantstenantId76F2596F"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.tenants.{tenantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadmintenantstenantId1A7F0352"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/PUT/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdPUT4C9730DF"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/DELETE/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.tenants.{tenantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdDELETEApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadmintenantstenantIdD1234805"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/DELETE/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.tenants.{tenantId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdDELETEApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadmintenantstenantId1BE386B6"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdDELETE7AA58E38"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsC9623FB4"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsOPTIONS29E28B5C"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants.{tenantId}.admins": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenantstenantIdadminsE73FA683"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants.{tenantId}.admins": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenantstenantIdadmins6AE960C7"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsPOST1B2080E3"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants.{tenantId}.admins": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenantstenantIdadminsD9338AE8"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants.{tenantId}.admins": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenantstenantIdadmins1CC1B3BF"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadmintenantstenantIdadminsGETCCDDA3D4"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsC13ADE45"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsOPTIONS524731C5"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminId43788901"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdOPTIONSE4E8D793"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.admins.{adminId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadminadminsadminId1CD2C46F"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.admins.{adminId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadminadminsadminId34B29C96"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/PUT/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdPUT87943E09"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/DELETE/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.admins.{adminId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdDELETEApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadminadminsadminId7F2CF96F"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/DELETE/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.admins.{adminId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdDELETEApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadminadminsadminId21765560"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdDELETE65A72257"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdresetpasswordFDD105BD"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdresetpasswordOPTIONS33ED7A9C"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.admins.{adminId}.reset-password": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdresetpasswordPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadminadminsadminIdresetpasswordC2B2AB81"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.admins.{adminId}.reset-password": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdresetpasswordPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadminadminsadminIdresetpassword7275E9C5"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApisuperadminadminsadminIdresetpasswordPOST757809A5"
           }
         ],
         "/MusicQuizStack/Frontend/FrontendBucket/Resource": [
@@ -1110,6 +1902,24 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ParticipantsTableName"
+          }
+        ],
+        "/MusicQuizStack/TenantsTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TenantsTableName"
+          }
+        ],
+        "/MusicQuizStack/GlobalParticipantsTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GlobalParticipantsTableName"
+          }
+        ],
+        "/MusicQuizStack/SessionParticipationsTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SessionParticipationsTableName"
           }
         ],
         "/MusicQuizStack/FrontendBucketName": [

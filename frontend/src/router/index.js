@@ -30,9 +30,31 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/super-admin/tenants',
+    name: 'TenantManagement',
+    component: () => import('@/views/admin/TenantManagementView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/super-admin/tenants/:tenantId/admins',
+    name: 'TenantAdminManagement',
+    component: () => import('@/views/admin/TenantAdminManagementView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/register',
     name: 'Registration',
     component: () => import('@/views/participant/RegisterView.vue')
+  },
+  {
+    path: '/lobby',
+    name: 'ParticipantLobby',
+    component: () => import('@/views/participant/LobbyView.vue')
+  },
+  {
+    path: '/profile',
+    name: 'ParticipantProfile',
+    component: () => import('@/views/participant/ProfileView.vue')
   },
   {
     path: '/quiz/:id',

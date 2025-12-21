@@ -1,6 +1,7 @@
 """
 Main CDK stack for Music Quiz application.
 """
+
 from aws_cdk import (
     Stack,
     CfnOutput,
@@ -47,6 +48,9 @@ class MusicQuizStack(Stack):
             quiz_rounds_table=database.quiz_rounds_table,
             participants_table=database.participants_table,
             answers_table=database.answers_table,
+            tenants_table=database.tenants_table,
+            global_participants_table=database.global_participants_table,
+            session_participations_table=database.session_participations_table,
             audio_bucket=storage.audio_bucket,
             cloudfront_domain=frontend_domain,
         )
@@ -136,6 +140,27 @@ class MusicQuizStack(Stack):
             "ParticipantsTableName",
             value=database.participants_table.table_name,
             description="DynamoDB Participants table name",
+        )
+
+        CfnOutput(
+            self,
+            "TenantsTableName",
+            value=database.tenants_table.table_name,
+            description="DynamoDB Tenants table name",
+        )
+
+        CfnOutput(
+            self,
+            "GlobalParticipantsTableName",
+            value=database.global_participants_table.table_name,
+            description="DynamoDB GlobalParticipants table name",
+        )
+
+        CfnOutput(
+            self,
+            "SessionParticipationsTableName",
+            value=database.session_participations_table.table_name,
+            description="DynamoDB SessionParticipations table name",
         )
 
         CfnOutput(

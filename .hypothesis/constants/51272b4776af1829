@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/join_session/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 201, 400, 404, 500, '..', ':participantId', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'MISSING_FIELDS', 'ParticipantIndex', 'QUIZ_SESSIONS_TABLE', 'QuizSessions', 'SESSION_NOT_FOUND', 'Z', 'body', 'common', 'correctAnswers', 'joinedAt', 'participantId', 'participationId', 'pathParameters', 'sessionId', 'statusCode', 'tenantId', 'totalPoints']

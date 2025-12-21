@@ -10,6 +10,19 @@
           <v-card-text class="pa-6">
             <error-alert v-if="error" :message="error" @close="error = null" />
 
+            <!-- Success message showing tenant name -->
+            <v-alert
+              v-if="showTenantInfo && authStore.tenantName"
+              type="success"
+              variant="tonal"
+              class="mb-4"
+            >
+              <div class="text-subtitle-1">
+                <v-icon class="mr-2">mdi-domain</v-icon>
+                Logged in to: <strong>{{ authStore.tenantName }}</strong>
+              </div>
+            </v-alert>
+
             <v-form ref="formRef" @submit.prevent="handleLogin">
               <v-text-field
                 v-model="username"
@@ -64,6 +77,7 @@ const password = ref("");
 const showPassword = ref(false);
 const loading = ref(false);
 const error = ref(null);
+const showTenantInfo = ref(false);
 
 const rules = {
   required: (value) => !!value || "This field is required",
@@ -81,7 +95,11 @@ const handleLogin = async () => {
   loading.value = false;
 
   if (result.success) {
-    router.push("/admin/dashboard");
+    // Show tenant info briefly before redirecting
+    showTenantInfo.value = true;
+    setTimeout(() => {
+      router.push("/admin/dashboard");
+    }, 1000);
   } else {
     error.value = result.error;
   }

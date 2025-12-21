@@ -1,6 +1,7 @@
 """
 DynamoDB table definitions for Music Quiz application.
 """
+
 from aws_cdk import aws_dynamodb as dynamodb, RemovalPolicy
 from constructs import Construct
 
@@ -10,6 +11,31 @@ class DatabaseTables(Construct):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs):
         super().__init__(scope, construct_id, **kwargs)
+
+        # Tenants table
+        self.tenants_table = dynamodb.Table(
+            self,
+            "TenantsTable",
+            table_name="Tenants",
+            partition_key=dynamodb.Attribute(
+                name="tenantId", type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+            point_in_time_recovery=True,
+        )
+
+        # Add GSI for status-based queries
+        self.tenants_table.add_global_secondary_index(
+            index_name="StatusIndex",
+            partition_key=dynamodb.Attribute(
+                name="status", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="createdAt", type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
 
         # Admins table
         self.admins_table = dynamodb.Table(
@@ -29,6 +55,18 @@ class DatabaseTables(Construct):
             index_name="UsernameIndex",
             partition_key=dynamodb.Attribute(
                 name="username", type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
+        # Add GSI for tenant-based admin queries
+        self.admins_table.add_global_secondary_index(
+            index_name="TenantIndex",
+            partition_key=dynamodb.Attribute(
+                name="tenantId", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="createdAt", type=dynamodb.AttributeType.STRING
             ),
             projection_type=dynamodb.ProjectionType.ALL,
         )
@@ -58,6 +96,18 @@ class DatabaseTables(Construct):
             projection_type=dynamodb.ProjectionType.ALL,
         )
 
+        # Add GSI for tenant-based session queries
+        self.quiz_sessions_table.add_global_secondary_index(
+            index_name="TenantStatusIndex",
+            partition_key=dynamodb.Attribute(
+                name="tenantId", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="createdAt", type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
         # QuizRounds table
         self.quiz_rounds_table = dynamodb.Table(
             self,
@@ -72,6 +122,68 @@ class DatabaseTables(Construct):
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
             removal_policy=RemovalPolicy.RETAIN,
             point_in_time_recovery=True,
+        )
+
+        # GlobalParticipants table
+        self.global_participants_table = dynamodb.Table(
+            self,
+            "GlobalParticipantsTable",
+            table_name="GlobalParticipants",
+            partition_key=dynamodb.Attribute(
+                name="participantId", type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+            point_in_time_recovery=True,
+        )
+
+        # Add GSI for tenant-based queries
+        self.global_participants_table.add_global_secondary_index(
+            index_name="TenantIndex",
+            partition_key=dynamodb.Attribute(
+                name="tenantId", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="createdAt", type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
+        # SessionParticipations table
+        self.session_participations_table = dynamodb.Table(
+            self,
+            "SessionParticipationsTable",
+            table_name="SessionParticipations",
+            partition_key=dynamodb.Attribute(
+                name="participationId", type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+            point_in_time_recovery=True,
+        )
+
+        # Add GSI for session-based queries
+        self.session_participations_table.add_global_secondary_index(
+            index_name="SessionIndex",
+            partition_key=dynamodb.Attribute(
+                name="sessionId", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="joinedAt", type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
+        # Add GSI for participant-based queries
+        self.session_participations_table.add_global_secondary_index(
+            index_name="ParticipantIndex",
+            partition_key=dynamodb.Attribute(
+                name="participantId", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="joinedAt", type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
         )
 
         # Participants table

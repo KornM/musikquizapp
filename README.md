@@ -1,201 +1,219 @@
-# Music Quiz Backend
+# 🎵 Music Quiz Application
 
-A serverless backend for a music quiz application built with AWS CDK, Lambda, DynamoDB, S3, and API Gateway.
+A modern, multi-tenant music quiz application built with AWS serverless architecture. Create engaging music quizzes with audio clips, images, or text-only questions. Perfect for events, parties, or educational purposes.
 
-## Architecture
+## ✨ Features
 
-- **API Gateway**: REST API with CORS support
-- **Lambda Functions**: Python 3.11 functions for all endpoints
-- **DynamoDB**: Tables for admins, quiz sessions, rounds, and participants
-- **S3**: Audio file storage
-- **CloudFront**: CDN for frontend distribution
+### 🎯 Core Functionality
+- **Multi-Tenant Architecture**: Isolated environments for different organizations
+- **Flexible Quiz Types**: Audio, image, or text-based questions
+- **Real-Time Scoring**: Instant feedback with time-based point system
+- **Global Leaderboard**: Aggregate scores across all sessions
+- **QR Code Registration**: Easy participant onboarding
+- **Presentation Mode**: Full-screen quiz display for events
 
-## Prerequisites
+### 👥 User Roles
+- **Super Admin**: Manage tenants and tenant admins
+- **Tenant Admin**: Create and manage quiz sessions
+- **Participants**: Join sessions and compete
 
+### 🎮 Participant Experience
+- **One-Time Registration**: Register once per tenant, join multiple sessions
+- **Lobby System**: Browse and join available quiz sessions
+- **Live Scoring**: See points earned in real-time
+- **Profile Management**: Customize name and avatar
+- **Mobile-Friendly**: Responsive design for all devices
+
+### 🎨 Admin Features
+- **Session Management**: Create, edit, and complete quiz sessions
+- **Round Management**: Add multiple rounds with 4 answer options
+- **Media Upload**: Support for audio files and images
+- **Participant Management**: View and manage session participants
+- **Live Scoreboard**: Monitor participant performance
+- **Global Analytics**: View aggregate scores across all sessions
+
+## 🏗️ Architecture
+
+### Technology Stack
+- **Frontend**: Vue 3 + Vuetify 3
+- **Backend**: AWS Lambda (Python 3.11)
+- **Database**: DynamoDB
+- **Storage**: S3 + CloudFront
+- **API**: API Gateway REST API
+- **Infrastructure**: AWS CDK (Python)
+
+### Key Components
+- **GlobalParticipants**: Tenant-wide participant profiles
+- **SessionParticipations**: Tracks participant session enrollment
+- **Quiz Sessions**: Quiz metadata and configuration
+- **Quiz Rounds**: Individual questions with answers
+- **Answers**: Participant responses with scoring
+
+## 🚀 Quick Start
+
+### Prerequisites
+- AWS Account with appropriate permissions
+- Node.js 18+ and npm
 - Python 3.11+
-- Node.js 18+ (for AWS CDK)
-- AWS CLI configured with credentials
-- AWS CDK CLI installed (`npm install -g aws-cdk`)
+- AWS CDK CLI (`npm install -g aws-cdk`)
 
-## Project Structure
+### Deployment
 
+1. **Clone and Setup**
+   ```bash
+   git clone <repository-url>
+   cd musikquizapp
+   ```
+
+2. **Deploy Backend**
+   ```bash
+   cd cdk
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   cdk bootstrap  # First time only
+   cdk deploy
+   ```
+
+3. **Configure Frontend**
+   ```bash
+   cd ../frontend
+   cp .env.example .env
+   # Edit .env with your API Gateway URL from CDK output
+   npm install
+   npm run build
+   ```
+
+4. **Create Super Admin**
+   ```bash
+   cd ../scripts
+   python create_super_admin.py
+   ```
+
+5. **Access Application**
+   - Admin: `https://your-cloudfront-domain/admin/login`
+   - Participant: Use QR code from quiz sessions
+
+## 📖 User Guide
+
+### For Admins
+
+**Creating a Quiz Session:**
+1. Login to admin dashboard
+2. Click "Create New Session"
+3. Enter title, description, and select media type
+4. Add rounds with questions and answers
+5. Upload audio/images if needed
+6. Start the session when ready
+
+**Managing a Session:**
+- **Start Round**: Begin a specific round for participants
+- **View Scoreboard**: See live participant rankings
+- **Complete Session**: End the session and prevent new answers
+- **Generate QR Code**: Share for easy participant registration
+
+### For Participants
+
+**Joining a Quiz:**
+1. Scan QR code or use registration link
+2. Enter your name and choose an avatar
+3. Browse available sessions in the lobby
+4. Click "Join Quiz" on an active session
+5. Answer questions as they appear
+6. View your score and ranking
+
+**Scoring System:**
+- **10 points**: Answer within 2 seconds
+- **8 points**: Answer within 5 seconds
+- **5 points**: Correct answer (slower)
+- **0 points**: Incorrect answer
+
+## 🔧 Configuration
+
+### Environment Variables
+
+**Frontend** (`.env`):
+```env
+VITE_API_BASE_URL=https://your-api-gateway-url
 ```
-.
-├── cdk/                          # CDK infrastructure code
-│   ├── app.py                    # CDK app entry point
-│   ├── cdk.json                  # CDK configuration
-│   ├── requirements.txt          # CDK dependencies
-│   └── music_quiz_stack/         # Stack constructs
-│       ├── stack.py              # Main stack
-│       ├── lambda_functions.py   # Lambda definitions
-│       ├── api_gateway.py        # API Gateway config
-│       ├── database.py           # DynamoDB tables
-│       └── storage.py            # S3 bucket
-├── lambda/                       # Lambda function code
-│   ├── common/                   # Shared utilities
-│   │   ├── auth.py               # JWT & password utilities
-│   │   ├── cors.py               # CORS headers
-│   │   ├── db.py                 # DynamoDB helpers
-│   │   └── errors.py             # Error responses
-│   ├── admin_login/              # Admin authentication
-│   ├── create_quiz/              # Create quiz session
-│   ├── add_round/                # Add quiz round
-│   ├── upload_audio/             # Upload audio file
-│   ├── get_quiz/                 # Get quiz session
-│   ├── list_sessions/            # List all sessions
-│   ├── register_participant/     # Participant registration
-│   ├── get_audio/                # Get audio presigned URL
-│   └── generate_qr/              # Generate QR code data
-├── scripts/                      # Utility scripts
-│   └── create_admin.py           # Create initial admin user
-└── tests/                        # Test suite
-    └── unit/                     # Unit tests
 
-```
+**Backend** (CDK):
+- Configured automatically via CDK deployment
+- JWT secret should be updated in production
+- Frontend URL configured in Lambda environment
 
-## Deployment
+### Customization
 
-### 1. Install Dependencies
+**Branding:**
+- Update `frontend/index.html` for title and meta tags
+- Modify color schemes in Vuetify configuration
+- Replace icons and logos as needed
+
+**Limits:**
+- Max rounds per session: 30
+- Answer options per question: 4
+- File upload size: Configured in Lambda
+
+## 🔐 Security
+
+- **Authentication**: JWT-based with role-based access control
+- **Multi-Tenancy**: Data isolation per tenant
+- **API Security**: CORS configured, token validation
+- **Data Protection**: DynamoDB encryption at rest
+- **S3 Security**: Signed URLs for media access
+
+## 📊 Database Schema
+
+### Tables
+- **Tenants**: Organization/tenant information
+- **Admins**: Admin user accounts
+- **GlobalParticipants**: Participant profiles (tenant-wide)
+- **SessionParticipations**: Session enrollment tracking
+- **QuizSessions**: Quiz session metadata
+- **QuizRounds**: Questions and answers
+- **Answers**: Participant responses
+
+### Indexes
+- **TenantIndex**: Query by tenant
+- **SessionIndex**: Query by session
+- **ParticipantIndex**: Query by participant
+
+## 🧪 Testing
 
 ```bash
-# Install CDK dependencies
-cd cdk
-pip install -r requirements.txt
-cd ..
+# Backend tests
+pytest
 
-# Install Lambda dependencies (if any additional packages needed)
-pip install boto3 pyjwt bcrypt
+# Frontend tests
+cd frontend
+npm run test
 ```
 
-### 2. Configure CDK
+## 📝 API Documentation
 
-Edit `cdk/cdk.json` to set your configuration:
+See `docs/API.md` for detailed API documentation.
 
-```json
-{
-  "context": {
-    "domain_name": "musikquiz.yourdomain.com",
-    "certificate_arn": "arn:aws:acm:us-east-1:ACCOUNT:certificate/CERT_ID",
-    "aws_account": "YOUR_AWS_ACCOUNT_ID",
-    "aws_region": "us-east-1"
-  }
-}
-```
+## 🤝 Contributing
 
-### 3. Deploy the Stack
+This is a private project. For questions or issues, contact the development team.
 
-```bash
-cd cdk
+## 📄 License
 
-# Synthesize CloudFormation template (optional, for validation)
-cdk synth
+Proprietary - All rights reserved
 
-# Deploy to AWS
-cdk deploy
+## 🆘 Support
 
-# Note the API Gateway endpoint URL from the output
-```
+For deployment issues or questions:
+1. Check CloudWatch logs for Lambda errors
+2. Verify DynamoDB table permissions
+3. Ensure API Gateway CORS is configured
+4. Review CDK deployment outputs
 
-### 4. Create Initial Admin User
+## 🎉 Acknowledgments
 
-After deployment, create an admin user:
+Built with modern serverless technologies for scalability and performance.
 
-```bash
-python scripts/create_admin.py --username admin --password YourSecurePassword123
-```
+---
 
-## API Endpoints
-
-### Admin Endpoints (Require JWT Token)
-
-- `POST /admin/login` - Admin authentication
-- `POST /admin/quiz-sessions` - Create quiz session
-- `POST /admin/quiz-sessions/{sessionId}/rounds` - Add quiz round
-- `POST /admin/audio` - Upload audio file
-
-### Public Endpoints
-
-- `GET /quiz-sessions` - List all quiz sessions
-- `GET /quiz-sessions/{sessionId}` - Get quiz session with rounds
-- `GET /quiz-sessions/{sessionId}/qr` - Get QR code registration URL
-- `POST /participants/register` - Register participant
-- `GET /audio/{audioKey}` - Get audio file (presigned URL)
-
-## Authentication
-
-### Admin Authentication
-
-1. Login with username/password to get JWT token:
-```bash
-curl -X POST https://api.example.com/admin/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"password"}'
-```
-
-2. Use token in Authorization header:
-```bash
-curl -X POST https://api.example.com/admin/quiz-sessions \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"title":"My Quiz","description":"Fun quiz"}'
-```
-
-### Participant Authentication
-
-Participants receive a token upon registration that can be used for future features.
-
-## Testing
-
-### Run Unit Tests
-
-```bash
-pytest tests/unit/
-```
-
-### Manual Testing
-
-See tasks 13-18 in `.kiro/specs/music-quiz-backend/tasks.md` for detailed testing procedures.
-
-## Environment Variables
-
-Lambda functions use these environment variables (automatically set by CDK):
-
-- `ADMINS_TABLE` - DynamoDB Admins table name
-- `QUIZ_SESSIONS_TABLE` - DynamoDB Sessions table name
-- `QUIZ_ROUNDS_TABLE` - DynamoDB Rounds table name
-- `PARTICIPANTS_TABLE` - DynamoDB Participants table name
-- `AUDIO_BUCKET` - S3 bucket for audio files
-- `JWT_SECRET` - JWT signing secret (should use AWS Secrets Manager in production)
-- `FRONTEND_URL` - Frontend URL for QR code generation
-
-## Security Notes
-
-- JWT_SECRET should be stored in AWS Secrets Manager for production
-- Admin passwords are hashed with bcrypt
-- S3 bucket is private; audio accessed via presigned URLs
-- CORS is configured for cross-origin requests
-- API Gateway has rate limiting enabled
-
-## Troubleshooting
-
-### CDK Deployment Fails
-
-- Ensure AWS credentials are configured: `aws configure`
-- Check CDK version: `cdk --version` (should be 2.x)
-- Verify account/region in cdk.json matches your AWS account
-
-### Lambda Function Errors
-
-- Check CloudWatch Logs for detailed error messages
-- Verify DynamoDB tables exist and have correct names
-- Ensure Lambda has proper IAM permissions
-
-### CORS Issues
-
-- Verify CORS headers in Lambda responses
-- Check API Gateway CORS configuration
-- Test with browser dev tools network tab
-
-## License
-
-MIT
+**Version**: 2.0.0  
+**Last Updated**: December 2024

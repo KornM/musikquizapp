@@ -1,5 +1,58 @@
 {
  "Resources": {
+  "DatabaseTenantsTableCCEF727D": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "tenantId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "StatusIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "tenantId",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "TableName": "Tenants"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Database/TenantsTable/Resource"
+   }
+  },
   "DatabaseAdminsTable41A3C3B4": {
    "Type": "AWS::DynamoDB::Table",
    "Properties": {
@@ -11,6 +64,14 @@
      {
       "AttributeName": "username",
       "AttributeType": "S"
+     },
+     {
+      "AttributeName": "tenantId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt",
+      "AttributeType": "S"
      }
     ],
     "BillingMode": "PAY_PER_REQUEST",
@@ -21,6 +82,22 @@
        {
         "AttributeName": "username",
         "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "TenantIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "tenantId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
        }
       ],
       "Projection": {
@@ -60,6 +137,10 @@
      {
       "AttributeName": "createdAt",
       "AttributeType": "S"
+     },
+     {
+      "AttributeName": "tenantId",
+      "AttributeType": "S"
      }
     ],
     "BillingMode": "PAY_PER_REQUEST",
@@ -69,6 +150,22 @@
       "KeySchema": [
        {
         "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "TenantStatusIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "tenantId",
         "KeyType": "HASH"
        },
        {
@@ -131,6 +228,132 @@
    "DeletionPolicy": "Retain",
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/Database/QuizRoundsTable/Resource"
+   }
+  },
+  "DatabaseGlobalParticipantsTable0DB1C7D4": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "participantId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "tenantId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "TenantIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "tenantId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "participantId",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "TableName": "GlobalParticipants"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Database/GlobalParticipantsTable/Resource"
+   }
+  },
+  "DatabaseSessionParticipationsTable031837B3": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "participationId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "sessionId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "joinedAt",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "participantId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "SessionIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "sessionId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "joinedAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "ParticipantIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "participantId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "joinedAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "participationId",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "TableName": "SessionParticipations"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Database/SessionParticipationsTable/Resource"
    }
   },
   "DatabaseParticipantsTable0EE3C285": {
@@ -416,13 +639,13 @@
     ],
     "Content": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "3b3d93e36ba8ff2934d08e59eb6e4117a736dec016191cc34899b21bb906ac2a.zip"
+     "S3Key": "99ab18864b13e53a8f358e275093f17c238cc7d49b490ef1a587b3ab783c2b95.zip"
     },
     "Description": "Common utilities and dependencies for Music Quiz Lambda functions"
    },
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CommonLayer/Resource",
-    "aws:asset:path": "asset.3b3d93e36ba8ff2934d08e59eb6e4117a736dec016191cc34899b21bb906ac2a",
+    "aws:asset:path": "asset.99ab18864b13e53a8f358e275093f17c238cc7d49b490ef1a587b3ab783c2b95",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Content"
    }
@@ -520,7 +743,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "76a3894116769c02cfe766dae61b4b4dc1ea88aae5a2c5af6187ee42e8f6cb85.zip"
+     "S3Key": "a48a434dfcaf266afcf94596f88ba2a1dc586ae2b38e1eadfa138bc6a2a8d8fe.zip"
     },
     "Environment": {
      "Variables": {
@@ -538,6 +761,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -569,7 +801,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/AdminLoginFunction/Resource",
-    "aws:asset:path": "asset.76a3894116769c02cfe766dae61b4b4dc1ea88aae5a2c5af6187ee42e8f6cb85",
+    "aws:asset:path": "asset.a48a434dfcaf266afcf94596f88ba2a1dc586ae2b38e1eadfa138bc6a2a8d8fe",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -644,6 +876,41 @@
          ]
         }
        ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
       }
      ],
      "Version": "2012-10-17"
@@ -664,7 +931,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "21f1523f40e78586947367d8d46ed04b3176302b27f9ccf5d62f29b9123b770c.zip"
+     "S3Key": "f1e47def7cde5b7cb9c49f5c55177f110c85802209928e268de6ce6a643969a7.zip"
     },
     "Environment": {
      "Variables": {
@@ -682,6 +949,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -713,7 +989,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CreateQuizFunction/Resource",
-    "aws:asset:path": "asset.21f1523f40e78586947367d8d46ed04b3176302b27f9ccf5d62f29b9123b770c",
+    "aws:asset:path": "asset.f1e47def7cde5b7cb9c49f5c55177f110c85802209928e268de6ce6a643969a7",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -824,7 +1100,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "9cf16dc386c750b88e8400dd72a9faaffacaec2dea99335486fc0f217bef4e3a.zip"
+     "S3Key": "5c41ac7ca58834dba59024382c8c64256c77c758da7802d5e5d346a42f23d9ab.zip"
     },
     "Environment": {
      "Variables": {
@@ -842,6 +1118,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -873,7 +1158,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/AddRoundFunction/Resource",
-    "aws:asset:path": "asset.9cf16dc386c750b88e8400dd72a9faaffacaec2dea99335486fc0f217bef4e3a",
+    "aws:asset:path": "asset.5c41ac7ca58834dba59024382c8c64256c77c758da7802d5e5d346a42f23d9ab",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -975,6 +1260,41 @@
          ]
         ]
        }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
       }
      ],
      "Version": "2012-10-17"
@@ -995,7 +1315,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "ae7220f5ff66b87f45db29e233e6305f04f18a41d3b73a338a1154d8bc0e1c0b.zip"
+     "S3Key": "403b67175c7769efe4d0bcd1c759944d9de40f5845c951bb1dede1171f4d2fb3.zip"
     },
     "Environment": {
      "Variables": {
@@ -1013,6 +1333,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -1044,7 +1373,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UploadAudioFunction/Resource",
-    "aws:asset:path": "asset.ae7220f5ff66b87f45db29e233e6305f04f18a41d3b73a338a1154d8bc0e1c0b",
+    "aws:asset:path": "asset.403b67175c7769efe4d0bcd1c759944d9de40f5845c951bb1dede1171f4d2fb3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1146,6 +1475,41 @@
          ]
         ]
        }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
       }
      ],
      "Version": "2012-10-17"
@@ -1166,7 +1530,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "9faa07a1b3eff9b8ad2f5cbb7fd48a23f1e89ad4024d041ead070c67a8e32b3c.zip"
+     "S3Key": "14e08ff6d94fd400267d3dd9f2869bb2eb884293e1fc5d9c06e8309f6a414ed3.zip"
     },
     "Environment": {
      "Variables": {
@@ -1184,6 +1548,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -1215,7 +1588,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UploadImageFunction/Resource",
-    "aws:asset:path": "asset.9faa07a1b3eff9b8ad2f5cbb7fd48a23f1e89ad4024d041ead070c67a8e32b3c",
+    "aws:asset:path": "asset.14e08ff6d94fd400267d3dd9f2869bb2eb884293e1fc5d9c06e8309f6a414ed3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1322,7 +1695,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "63bee968f49d40a881ecae594319aee256c6b761a10545eb52d6484d664c5b7e.zip"
+     "S3Key": "00bfe3a9785be36b0935b42c07d61e3803180b0ae29bdb289969ea46d9195cee.zip"
     },
     "Environment": {
      "Variables": {
@@ -1340,6 +1713,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -1371,7 +1753,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetQuizFunction/Resource",
-    "aws:asset:path": "asset.63bee968f49d40a881ecae594319aee256c6b761a10545eb52d6484d664c5b7e",
+    "aws:asset:path": "asset.00bfe3a9785be36b0935b42c07d61e3803180b0ae29bdb289969ea46d9195cee",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1469,7 +1851,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "6a9d635315ae3220f7406d3549ad845ad6aec2d7aa4ee9fb93c1e2c5686f073f.zip"
+     "S3Key": "c02697b95b800bcd160e3b5702a275dbc9ae0e60611eaa101b9ec5ba83e7fe83.zip"
     },
     "Environment": {
      "Variables": {
@@ -1487,6 +1869,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -1518,7 +1909,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ListSessionsFunction/Resource",
-    "aws:asset:path": "asset.6a9d635315ae3220f7406d3549ad845ad6aec2d7aa4ee9fb93c1e2c5686f073f",
+    "aws:asset:path": "asset.c02697b95b800bcd160e3b5702a275dbc9ae0e60611eaa101b9ec5ba83e7fe83",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1599,10 +1990,17 @@
       },
       {
        "Action": [
+        "dynamodb:BatchGetItem",
         "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
         "dynamodb:DeleteItem",
         "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
         "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
@@ -1666,6 +2064,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -1809,6 +2216,15 @@
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
       },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
       },
@@ -1937,7 +2353,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "6ff349adc17962b06ebdf7821fd805d56559caef5fa15efa487daca8b4febc59.zip"
+     "S3Key": "1d4b1ee8ddfe3bc760615823a3adec20448ed95add48d78dda1612c881bcaae7.zip"
     },
     "Environment": {
      "Variables": {
@@ -1955,6 +2371,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -1986,7 +2411,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GenerateQRFunction/Resource",
-    "aws:asset:path": "asset.6ff349adc17962b06ebdf7821fd805d56559caef5fa15efa487daca8b4febc59",
+    "aws:asset:path": "asset.1d4b1ee8ddfe3bc760615823a3adec20448ed95add48d78dda1612c881bcaae7",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2115,7 +2540,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "a4a710dcda614bdecf1af862e427f0157229a6e5cbaa23e40b77a3803915e203.zip"
+     "S3Key": "2cec2b5d740ad6bd6ce51d90d624151eb8c62eddbf1d75a72af9ab45c979e467.zip"
     },
     "Environment": {
      "Variables": {
@@ -2133,6 +2558,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -2164,7 +2598,167 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteSessionFunction/Resource",
-    "aws:asset:path": "asset.a4a710dcda614bdecf1af862e427f0157229a6e5cbaa23e40b77a3803915e203",
+    "aws:asset:path": "asset.2cec2b5d740ad6bd6ce51d90d624151eb8c62eddbf1d75a72af9ab45c979e467",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsCompleteSessionFunctionServiceRoleD043A5AF": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CompleteSessionFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsCompleteSessionFunctionServiceRoleDefaultPolicy93C35F30": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsCompleteSessionFunctionServiceRoleDefaultPolicy93C35F30",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsCompleteSessionFunctionServiceRoleD043A5AF"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CompleteSessionFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsCompleteSessionFunction8B7A45CB": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "983919514474bfbfe86233bb4a62aa894d64b7a695007009542100acb06c6d06.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCompleteSessionFunctionServiceRoleD043A5AF",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsCompleteSessionFunctionServiceRoleDefaultPolicy93C35F30",
+    "LambdaFunctionsCompleteSessionFunctionServiceRoleD043A5AF"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CompleteSessionFunction/Resource",
+    "aws:asset:path": "asset.983919514474bfbfe86233bb4a62aa894d64b7a695007009542100acb06c6d06",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2293,7 +2887,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "bc04566492e757966da52bb30722e0bbe20ef42403b7b3d43a30488a49a12839.zip"
+     "S3Key": "cdb75556447d1dc921bb16ef49329f2a54b75d7ba96f997ac470f940fde0fd4a.zip"
     },
     "Environment": {
      "Variables": {
@@ -2311,6 +2905,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -2342,7 +2945,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteRoundFunction/Resource",
-    "aws:asset:path": "asset.bc04566492e757966da52bb30722e0bbe20ef42403b7b3d43a30488a49a12839",
+    "aws:asset:path": "asset.cdb75556447d1dc921bb16ef49329f2a54b75d7ba96f997ac470f940fde0fd4a",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2468,7 +3071,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "5649bda5d51ff56671adc7480472476ba859d8af1aa77d8d248e63df8123782a.zip"
+     "S3Key": "bdaae72211db3262fb562d3a9e53b14a17189e2df63209ebc005b788d132c12e.zip"
     },
     "Environment": {
      "Variables": {
@@ -2486,6 +3089,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -2517,7 +3129,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/StartRoundFunction/Resource",
-    "aws:asset:path": "asset.5649bda5d51ff56671adc7480472476ba859d8af1aa77d8d248e63df8123782a",
+    "aws:asset:path": "asset.bdaae72211db3262fb562d3a9e53b14a17189e2df63209ebc005b788d132c12e",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2576,13 +3188,13 @@
        "Resource": [
         {
          "Fn::GetAtt": [
-          "DatabaseParticipantsTable0EE3C285",
+          "DatabaseQuizRoundsTable727C8ABB",
           "Arn"
          ]
         },
         {
          "Fn::GetAtt": [
-          "DatabaseQuizRoundsTable727C8ABB",
+          "DatabaseQuizSessionsTableF99CA700",
           "Arn"
          ]
         },
@@ -2592,7 +3204,7 @@
           [
            {
             "Fn::GetAtt": [
-             "DatabaseParticipantsTable0EE3C285",
+             "DatabaseQuizSessionsTableF99CA700",
              "Arn"
             ]
            },
@@ -2607,10 +3219,17 @@
       },
       {
        "Action": [
+        "dynamodb:BatchGetItem",
         "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
         "dynamodb:DeleteItem",
         "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
         "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
@@ -2622,12 +3241,32 @@
          ]
         },
         {
+         "Fn::GetAtt": [
+          "DatabaseSessionParticipationsTable031837B3",
+          "Arn"
+         ]
+        },
+        {
          "Fn::Join": [
           "",
           [
            {
             "Fn::GetAtt": [
              "DatabaseAnswersTable3BFE199F",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseSessionParticipationsTable031837B3",
              "Arn"
             ]
            },
@@ -2656,7 +3295,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "0d6475bcb5a986a05a1203beff6a81b131a0e028b33fa0c2b20c5830e20d8e37.zip"
+     "S3Key": "b0da32aa12004fbb8878c8a5e48e8f1fa32162bd85b2cfbf568a1b889df529b1.zip"
     },
     "Environment": {
      "Variables": {
@@ -2674,6 +3313,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -2705,7 +3353,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/SubmitAnswerFunction/Resource",
-    "aws:asset:path": "asset.0d6475bcb5a986a05a1203beff6a81b131a0e028b33fa0c2b20c5830e20d8e37",
+    "aws:asset:path": "asset.b0da32aa12004fbb8878c8a5e48e8f1fa32162bd85b2cfbf568a1b889df529b1",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2764,7 +3412,7 @@
        "Resource": [
         {
          "Fn::GetAtt": [
-          "DatabaseAnswersTable3BFE199F",
+          "DatabaseGlobalParticipantsTable0DB1C7D4",
           "Arn"
          ]
         },
@@ -2781,12 +3429,18 @@
          ]
         },
         {
+         "Fn::GetAtt": [
+          "DatabaseSessionParticipationsTable031837B3",
+          "Arn"
+         ]
+        },
+        {
          "Fn::Join": [
           "",
           [
            {
             "Fn::GetAtt": [
-             "DatabaseAnswersTable3BFE199F",
+             "DatabaseGlobalParticipantsTable0DB1C7D4",
              "Arn"
             ]
            },
@@ -2821,6 +3475,20 @@
            "/index/*"
           ]
          ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseSessionParticipationsTable031837B3",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
         }
        ]
       }
@@ -2843,7 +3511,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "1f8daa6749ca54474984aae020f635c05d85e8837197a2447996cec8b53868b0.zip"
+     "S3Key": "489ed6ce7c9157090e85deeee248d36fa43f324e34b5ca9f76b3f2f6f12ddceb.zip"
     },
     "Environment": {
      "Variables": {
@@ -2861,6 +3529,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -2892,7 +3569,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetScoreboardFunction/Resource",
-    "aws:asset:path": "asset.1f8daa6749ca54474984aae020f635c05d85e8837197a2447996cec8b53868b0",
+    "aws:asset:path": "asset.489ed6ce7c9157090e85deeee248d36fa43f324e34b5ca9f76b3f2f6f12ddceb",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2974,6 +3651,41 @@
          ]
         }
        ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
       }
      ],
      "Version": "2012-10-17"
@@ -2994,7 +3706,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "98cd30c60a713591094cffbbcc079994ade0ecfdfef066e43c66c037dc1b0db3.zip"
+     "S3Key": "1f4587c79ef2b3709fe0bbd67dc769d290973a229e9d2fc3f3da79577e485489.zip"
     },
     "Environment": {
      "Variables": {
@@ -3012,6 +3724,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -3043,7 +3764,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ResetPointsFunction/Resource",
-    "aws:asset:path": "asset.98cd30c60a713591094cffbbcc079994ade0ecfdfef066e43c66c037dc1b0db3",
+    "aws:asset:path": "asset.1f4587c79ef2b3709fe0bbd67dc769d290973a229e9d2fc3f3da79577e485489",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -3145,6 +3866,41 @@
          ]
         }
        ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
       }
      ],
      "Version": "2012-10-17"
@@ -3165,7 +3921,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
-     "S3Key": "9919cfe2dcff08ef981e5db2c0bd55aa9b2014fc7aa13d8416e753ee1b611b56.zip"
+     "S3Key": "b13675b55719d5e9ac8edc5a943c6196bad6b4b375972dbc6b8de42a5631ed14.zip"
     },
     "Environment": {
      "Variables": {
@@ -3183,6 +3939,15 @@
       },
       "ANSWERS_TABLE": {
        "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
       },
       "AUDIO_BUCKET": {
        "Ref": "StorageAudioBucket2FC0E858"
@@ -3214,7 +3979,2847 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ClearParticipantsFunction/Resource",
-    "aws:asset:path": "asset.9919cfe2dcff08ef981e5db2c0bd55aa9b2014fc7aa13d8416e753ee1b611b56",
+    "aws:asset:path": "asset.b13675b55719d5e9ac8edc5a943c6196bad6b4b375972dbc6b8de42a5631ed14",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsGetParticipantsFunctionServiceRoleAD9F030D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetParticipantsFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsGetParticipantsFunctionServiceRoleDefaultPolicy1044CBA6": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseGlobalParticipantsTable0DB1C7D4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "DatabaseParticipantsTable0EE3C285",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "DatabaseSessionParticipationsTable031837B3",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseGlobalParticipantsTable0DB1C7D4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseParticipantsTable0EE3C285",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseSessionParticipationsTable031837B3",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsGetParticipantsFunctionServiceRoleDefaultPolicy1044CBA6",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsGetParticipantsFunctionServiceRoleAD9F030D"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetParticipantsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsGetParticipantsFunctionBAD55093": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "48d218efdf4a7fdf209fd3b197af719010343b2303cefd389a50b8922b2ce323.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGetParticipantsFunctionServiceRoleAD9F030D",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsGetParticipantsFunctionServiceRoleDefaultPolicy1044CBA6",
+    "LambdaFunctionsGetParticipantsFunctionServiceRoleAD9F030D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetParticipantsFunction/Resource",
+    "aws:asset:path": "asset.48d218efdf4a7fdf209fd3b197af719010343b2303cefd389a50b8922b2ce323",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsUpdateParticipantFunctionServiceRole6B353E4C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateParticipantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateParticipantFunctionServiceRoleDefaultPolicy7C600931": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseParticipantsTable0EE3C285",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseParticipantsTable0EE3C285",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsUpdateParticipantFunctionServiceRoleDefaultPolicy7C600931",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsUpdateParticipantFunctionServiceRole6B353E4C"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateParticipantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateParticipantFunction747343C2": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "24a94a7f9e204099f6aa37405a006a8d7d270be1d40b822f3143504623d2a16f.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateParticipantFunctionServiceRole6B353E4C",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsUpdateParticipantFunctionServiceRoleDefaultPolicy7C600931",
+    "LambdaFunctionsUpdateParticipantFunctionServiceRole6B353E4C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateParticipantFunction/Resource",
+    "aws:asset:path": "asset.24a94a7f9e204099f6aa37405a006a8d7d270be1d40b822f3143504623d2a16f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsDeleteParticipantFunctionServiceRole61972E3B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteParticipantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsDeleteParticipantFunctionServiceRoleDefaultPolicy720114E2": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseAnswersTable3BFE199F",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "DatabaseParticipantsTable0EE3C285",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseAnswersTable3BFE199F",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseParticipantsTable0EE3C285",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsDeleteParticipantFunctionServiceRoleDefaultPolicy720114E2",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsDeleteParticipantFunctionServiceRole61972E3B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteParticipantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsDeleteParticipantFunction0A357007": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "dd6b1ddaa3f7ceec6ca7e1feb42263d826dfaf082d0ad6d8cdd5b3ac588afec0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteParticipantFunctionServiceRole61972E3B",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsDeleteParticipantFunctionServiceRoleDefaultPolicy720114E2",
+    "LambdaFunctionsDeleteParticipantFunctionServiceRole61972E3B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteParticipantFunction/Resource",
+    "aws:asset:path": "asset.dd6b1ddaa3f7ceec6ca7e1feb42263d826dfaf082d0ad6d8cdd5b3ac588afec0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsCreateTenantFunctionServiceRole28523C09": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CreateTenantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsCreateTenantFunctionServiceRoleDefaultPolicyD133E0D6": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsCreateTenantFunctionServiceRoleDefaultPolicyD133E0D6",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsCreateTenantFunctionServiceRole28523C09"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CreateTenantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsCreateTenantFunction9C152250": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "a426e440b111bc1048323cadaccd2ff96090a594444bfd3fecba6a5a7c2abe53.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCreateTenantFunctionServiceRole28523C09",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsCreateTenantFunctionServiceRoleDefaultPolicyD133E0D6",
+    "LambdaFunctionsCreateTenantFunctionServiceRole28523C09"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CreateTenantFunction/Resource",
+    "aws:asset:path": "asset.a426e440b111bc1048323cadaccd2ff96090a594444bfd3fecba6a5a7c2abe53",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsListTenantsFunctionServiceRole3CB4AD7C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ListTenantsFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsListTenantsFunctionServiceRoleDefaultPolicyC2E38426": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsListTenantsFunctionServiceRoleDefaultPolicyC2E38426",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsListTenantsFunctionServiceRole3CB4AD7C"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ListTenantsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsListTenantsFunction00691DB7": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "f570d36fc5d26f225bfa2a369cc639356e9e788fdf64852cfe667821e6872c7b.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsListTenantsFunctionServiceRole3CB4AD7C",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsListTenantsFunctionServiceRoleDefaultPolicyC2E38426",
+    "LambdaFunctionsListTenantsFunctionServiceRole3CB4AD7C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ListTenantsFunction/Resource",
+    "aws:asset:path": "asset.f570d36fc5d26f225bfa2a369cc639356e9e788fdf64852cfe667821e6872c7b",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsUpdateTenantFunctionServiceRole2A5AD1F3": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateTenantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateTenantFunctionServiceRoleDefaultPolicy493FE75C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsUpdateTenantFunctionServiceRoleDefaultPolicy493FE75C",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsUpdateTenantFunctionServiceRole2A5AD1F3"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateTenantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateTenantFunction378AFD33": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "9512abc56e6f266120ffff91e39af528bc6266c5f9cf6ab17793198a96bdf8f7.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateTenantFunctionServiceRole2A5AD1F3",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsUpdateTenantFunctionServiceRoleDefaultPolicy493FE75C",
+    "LambdaFunctionsUpdateTenantFunctionServiceRole2A5AD1F3"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateTenantFunction/Resource",
+    "aws:asset:path": "asset.9512abc56e6f266120ffff91e39af528bc6266c5f9cf6ab17793198a96bdf8f7",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsDeleteTenantFunctionServiceRole44707942": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteTenantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsDeleteTenantFunctionServiceRoleDefaultPolicyF3948913": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsDeleteTenantFunctionServiceRoleDefaultPolicyF3948913",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsDeleteTenantFunctionServiceRole44707942"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteTenantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsDeleteTenantFunction7C672802": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "3ccb6bfba41a6d6620b16edd663ec36a953a5fbaa2489519099ca96172d5f605.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteTenantFunctionServiceRole44707942",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsDeleteTenantFunctionServiceRoleDefaultPolicyF3948913",
+    "LambdaFunctionsDeleteTenantFunctionServiceRole44707942"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteTenantFunction/Resource",
+    "aws:asset:path": "asset.3ccb6bfba41a6d6620b16edd663ec36a953a5fbaa2489519099ca96172d5f605",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsCreateTenantAdminFunctionServiceRole9A342F1F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CreateTenantAdminFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsCreateTenantAdminFunctionServiceRoleDefaultPolicy364F7C00": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseAdminsTable41A3C3B4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseAdminsTable41A3C3B4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsCreateTenantAdminFunctionServiceRoleDefaultPolicy364F7C00",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsCreateTenantAdminFunctionServiceRole9A342F1F"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CreateTenantAdminFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsCreateTenantAdminFunction46EEC7EE": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "fcd672f67324cf6ec6ae50485bad18db2590dad1abd3dea9486c4ee578039745.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCreateTenantAdminFunctionServiceRole9A342F1F",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsCreateTenantAdminFunctionServiceRoleDefaultPolicy364F7C00",
+    "LambdaFunctionsCreateTenantAdminFunctionServiceRole9A342F1F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/CreateTenantAdminFunction/Resource",
+    "aws:asset:path": "asset.fcd672f67324cf6ec6ae50485bad18db2590dad1abd3dea9486c4ee578039745",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsListTenantAdminsFunctionServiceRole995882FE": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ListTenantAdminsFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsListTenantAdminsFunctionServiceRoleDefaultPolicy2E8CAD12": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseAdminsTable41A3C3B4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseAdminsTable41A3C3B4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsListTenantAdminsFunctionServiceRoleDefaultPolicy2E8CAD12",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsListTenantAdminsFunctionServiceRole995882FE"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ListTenantAdminsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsListTenantAdminsFunction64413C7C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "cf219afc70a38628d54c1676f2e9248adb3244074c54946fdf264c63a7f09592.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsListTenantAdminsFunctionServiceRole995882FE",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsListTenantAdminsFunctionServiceRoleDefaultPolicy2E8CAD12",
+    "LambdaFunctionsListTenantAdminsFunctionServiceRole995882FE"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ListTenantAdminsFunction/Resource",
+    "aws:asset:path": "asset.cf219afc70a38628d54c1676f2e9248adb3244074c54946fdf264c63a7f09592",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleAEDBA09B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateTenantAdminFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleDefaultPolicyBBE9A8BB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseAdminsTable41A3C3B4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseAdminsTable41A3C3B4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleDefaultPolicyBBE9A8BB",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleAEDBA09B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateTenantAdminFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateTenantAdminFunction0CD2C7DB": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "f5caa6321912cf451f7a965ec12616a5b2a13235360b93f730c47789450c4c6d.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleAEDBA09B",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleDefaultPolicyBBE9A8BB",
+    "LambdaFunctionsUpdateTenantAdminFunctionServiceRoleAEDBA09B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateTenantAdminFunction/Resource",
+    "aws:asset:path": "asset.f5caa6321912cf451f7a965ec12616a5b2a13235360b93f730c47789450c4c6d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsDeleteTenantAdminFunctionServiceRole750962E8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteTenantAdminFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsDeleteTenantAdminFunctionServiceRoleDefaultPolicyEC9771C0": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseAdminsTable41A3C3B4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseAdminsTable41A3C3B4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsDeleteTenantAdminFunctionServiceRoleDefaultPolicyEC9771C0",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsDeleteTenantAdminFunctionServiceRole750962E8"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteTenantAdminFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsDeleteTenantAdminFunctionEF5EA1F3": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "696ae25c69398ced467a0188c86fd577a87cd6235f093e487312abd897c9fd23.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteTenantAdminFunctionServiceRole750962E8",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsDeleteTenantAdminFunctionServiceRoleDefaultPolicyEC9771C0",
+    "LambdaFunctionsDeleteTenantAdminFunctionServiceRole750962E8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/DeleteTenantAdminFunction/Resource",
+    "aws:asset:path": "asset.696ae25c69398ced467a0188c86fd577a87cd6235f093e487312abd897c9fd23",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsResetPasswordAdminFunctionServiceRole8B298B73": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ResetPasswordAdminFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsResetPasswordAdminFunctionServiceRoleDefaultPolicy41C49932": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseAdminsTable41A3C3B4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseAdminsTable41A3C3B4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsResetPasswordAdminFunctionServiceRoleDefaultPolicy41C49932",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsResetPasswordAdminFunctionServiceRole8B298B73"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ResetPasswordAdminFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsResetPasswordAdminFunction53FD33E2": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "8b81a3ddf0ed66f7061b601a391ce7c871c61c1d4c17709ec64638131e0d3409.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsResetPasswordAdminFunctionServiceRole8B298B73",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsResetPasswordAdminFunctionServiceRoleDefaultPolicy41C49932",
+    "LambdaFunctionsResetPasswordAdminFunctionServiceRole8B298B73"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/ResetPasswordAdminFunction/Resource",
+    "aws:asset:path": "asset.8b81a3ddf0ed66f7061b601a391ce7c871c61c1d4c17709ec64638131e0d3409",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRole632C1548": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/RegisterGlobalParticipantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRoleDefaultPolicyD21F5436": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseTenantsTableCCEF727D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseTenantsTableCCEF727D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseGlobalParticipantsTable0DB1C7D4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseGlobalParticipantsTable0DB1C7D4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRoleDefaultPolicyD21F5436",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRole632C1548"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/RegisterGlobalParticipantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsRegisterGlobalParticipantFunction643487BD": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "5c46b96687d1f04b14d8be32416bad61460e6fc954a1fded62ecc30a613d12d1.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRole632C1548",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRoleDefaultPolicyD21F5436",
+    "LambdaFunctionsRegisterGlobalParticipantFunctionServiceRole632C1548"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/RegisterGlobalParticipantFunction/Resource",
+    "aws:asset:path": "asset.5c46b96687d1f04b14d8be32416bad61460e6fc954a1fded62ecc30a613d12d1",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleADE7EFA7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetGlobalParticipantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleDefaultPolicy377AC260": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseGlobalParticipantsTable0DB1C7D4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseGlobalParticipantsTable0DB1C7D4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleDefaultPolicy377AC260",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleADE7EFA7"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetGlobalParticipantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsGetGlobalParticipantFunction43520741": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "04ce3510bd551d62e34d4d872c491afc799575279347ff37280bc01eb6f7c6f3.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleADE7EFA7",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleDefaultPolicy377AC260",
+    "LambdaFunctionsGetGlobalParticipantFunctionServiceRoleADE7EFA7"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/GetGlobalParticipantFunction/Resource",
+    "aws:asset:path": "asset.04ce3510bd551d62e34d4d872c491afc799575279347ff37280bc01eb6f7c6f3",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleBB4935CD": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateGlobalParticipantFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleDefaultPolicy378BB48E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseGlobalParticipantsTable0DB1C7D4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseGlobalParticipantsTable0DB1C7D4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleDefaultPolicy378BB48E",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleBB4935CD"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateGlobalParticipantFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsUpdateGlobalParticipantFunctionA1644C4C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "159bc89bf8b6381b19e7d308f9bc3bff9f5898886cedeb0ea4a4b40998b7485f.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleBB4935CD",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleDefaultPolicy378BB48E",
+    "LambdaFunctionsUpdateGlobalParticipantFunctionServiceRoleBB4935CD"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/UpdateGlobalParticipantFunction/Resource",
+    "aws:asset:path": "asset.159bc89bf8b6381b19e7d308f9bc3bff9f5898886cedeb0ea4a4b40998b7485f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsJoinSessionFunctionServiceRoleEC82390A": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/JoinSessionFunction/ServiceRole/Resource"
+   }
+  },
+  "LambdaFunctionsJoinSessionFunctionServiceRoleDefaultPolicy7235311C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseGlobalParticipantsTable0DB1C7D4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "DatabaseQuizSessionsTableF99CA700",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseGlobalParticipantsTable0DB1C7D4",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseQuizSessionsTableF99CA700",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseSessionParticipationsTable031837B3",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseSessionParticipationsTable031837B3",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsJoinSessionFunctionServiceRoleDefaultPolicy7235311C",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsJoinSessionFunctionServiceRoleEC82390A"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/JoinSessionFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsJoinSessionFunction6C175753": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-967169659906-eu-central-1",
+     "S3Key": "e9f62c336d9136b466368af74dec5f8acdee92e04bea9965e642d27514aa8683.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ADMINS_TABLE": {
+       "Ref": "DatabaseAdminsTable41A3C3B4"
+      },
+      "QUIZ_SESSIONS_TABLE": {
+       "Ref": "DatabaseQuizSessionsTableF99CA700"
+      },
+      "QUIZ_ROUNDS_TABLE": {
+       "Ref": "DatabaseQuizRoundsTable727C8ABB"
+      },
+      "PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseParticipantsTable0EE3C285"
+      },
+      "ANSWERS_TABLE": {
+       "Ref": "DatabaseAnswersTable3BFE199F"
+      },
+      "TENANTS_TABLE": {
+       "Ref": "DatabaseTenantsTableCCEF727D"
+      },
+      "GLOBAL_PARTICIPANTS_TABLE": {
+       "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+      },
+      "SESSION_PARTICIPATIONS_TABLE": {
+       "Ref": "DatabaseSessionParticipationsTable031837B3"
+      },
+      "AUDIO_BUCKET": {
+       "Ref": "StorageAudioBucket2FC0E858"
+      },
+      "JWT_SECRET": "CHANGE_THIS_IN_PRODUCTION",
+      "FRONTEND_URL": "https://katrins-music-quiz.kornis.bayern",
+      "CLOUDFRONT_DOMAIN": "katrins-music-quiz.kornis.bayern"
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsCommonLayerDC56DC9A"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsJoinSessionFunctionServiceRoleEC82390A",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsJoinSessionFunctionServiceRoleDefaultPolicy7235311C",
+    "LambdaFunctionsJoinSessionFunctionServiceRoleEC82390A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/LambdaFunctions/JoinSessionFunction/Resource",
+    "aws:asset:path": "asset.e9f62c336d9136b466368af74dec5f8acdee92e04bea9965e642d27514aa8683",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -3284,7 +6889,7 @@
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Account"
    }
   },
-  "ApiMusicQuizApiDeployment9AF6ED9C0d8788ebf7b9f1a80eb964316901a5f8": {
+  "ApiMusicQuizApiDeployment9AF6ED9C5a008ea7448012aacb3fa0f002bcfdd6": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "API for Music Quiz application",
@@ -3303,9 +6908,17 @@
     "ApiMusicQuizApiadminloginPOSTE5CF618E",
     "ApiMusicQuizApiadminlogin08F589B6",
     "ApiMusicQuizApiadminOPTIONS84CA5A21",
+    "ApiMusicQuizApiadminquizsessionssessionIdcompleteOPTIONSB6AE550B",
+    "ApiMusicQuizApiadminquizsessionssessionIdcompletePOST1E8E81F1",
+    "ApiMusicQuizApiadminquizsessionssessionIdcompleteA2E48DF8",
     "ApiMusicQuizApiadminquizsessionssessionIdDELETEF72629B5",
     "ApiMusicQuizApiadminquizsessionssessionIdOPTIONS8146BBD8",
+    "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdDELETE2209080E",
+    "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdOPTIONSE7D588D9",
+    "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdPUT83CA26E7",
+    "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantId6D798286",
     "ApiMusicQuizApiadminquizsessionssessionIdparticipantsDELETE667F7FA6",
+    "ApiMusicQuizApiadminquizsessionssessionIdparticipantsGETF1C79ECA",
     "ApiMusicQuizApiadminquizsessionssessionIdparticipantsOPTIONS2EB76776",
     "ApiMusicQuizApiadminquizsessionssessionIdparticipants2A7C240C",
     "ApiMusicQuizApiadminquizsessionssessionIdpointsDELETE5D7C4D9C",
@@ -3329,6 +6942,10 @@
     "ApiMusicQuizApiaudioOPTIONS76571F9D",
     "ApiMusicQuizApiaudio8C6C040A",
     "ApiMusicQuizApiOPTIONS81F75721",
+    "ApiMusicQuizApiparticipantsparticipantIdGET5098DCFC",
+    "ApiMusicQuizApiparticipantsparticipantIdOPTIONS8BC7A0BC",
+    "ApiMusicQuizApiparticipantsparticipantIdPUT1BA7C059",
+    "ApiMusicQuizApiparticipantsparticipantId30AECF00",
     "ApiMusicQuizApiparticipantsanswersOPTIONS7A8249CD",
     "ApiMusicQuizApiparticipantsanswersPOSTE0725185",
     "ApiMusicQuizApiparticipantsanswersFDA1AEFA",
@@ -3348,7 +6965,37 @@
     "ApiMusicQuizApiquizsessionssessionIdscoreboardC0AE740B",
     "ApiMusicQuizApiquizsessionsGET02601F79",
     "ApiMusicQuizApiquizsessionsOPTIONSF20AE5D6",
-    "ApiMusicQuizApiquizsessions7D199DF2"
+    "ApiMusicQuizApiquizsessions7D199DF2",
+    "ApiMusicQuizApisessionssessionIdjoinOPTIONS0EA5BA24",
+    "ApiMusicQuizApisessionssessionIdjoinPOSTEA18F600",
+    "ApiMusicQuizApisessionssessionIdjoin963F0B8B",
+    "ApiMusicQuizApisessionssessionIdOPTIONS9206E2D3",
+    "ApiMusicQuizApisessionssessionId84B18FDD",
+    "ApiMusicQuizApisessionsOPTIONSE3F26714",
+    "ApiMusicQuizApisessions59E0BC24",
+    "ApiMusicQuizApisuperadminadminsadminIdDELETE65A72257",
+    "ApiMusicQuizApisuperadminadminsadminIdOPTIONSE4E8D793",
+    "ApiMusicQuizApisuperadminadminsadminIdPUT87943E09",
+    "ApiMusicQuizApisuperadminadminsadminIdresetpasswordOPTIONS33ED7A9C",
+    "ApiMusicQuizApisuperadminadminsadminIdresetpasswordPOST757809A5",
+    "ApiMusicQuizApisuperadminadminsadminIdresetpasswordFDD105BD",
+    "ApiMusicQuizApisuperadminadminsadminId43788901",
+    "ApiMusicQuizApisuperadminadminsOPTIONS524731C5",
+    "ApiMusicQuizApisuperadminadminsC13ADE45",
+    "ApiMusicQuizApisuperadminOPTIONS9AD0FDD4",
+    "ApiMusicQuizApisuperadminF5CB05FE",
+    "ApiMusicQuizApisuperadmintenantstenantIdadminsGETCCDDA3D4",
+    "ApiMusicQuizApisuperadmintenantstenantIdadminsOPTIONS29E28B5C",
+    "ApiMusicQuizApisuperadmintenantstenantIdadminsPOST1B2080E3",
+    "ApiMusicQuizApisuperadmintenantstenantIdadminsC9623FB4",
+    "ApiMusicQuizApisuperadmintenantstenantIdDELETE7AA58E38",
+    "ApiMusicQuizApisuperadmintenantstenantIdOPTIONSD5B2B984",
+    "ApiMusicQuizApisuperadmintenantstenantIdPUT4C9730DF",
+    "ApiMusicQuizApisuperadmintenantstenantId621D586D",
+    "ApiMusicQuizApisuperadmintenantsGETF73022D5",
+    "ApiMusicQuizApisuperadmintenantsOPTIONS8C11AD07",
+    "ApiMusicQuizApisuperadmintenantsPOST6631A5FB",
+    "ApiMusicQuizApisuperadmintenantsC6AC0921"
    ],
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Deployment/Resource"
@@ -3358,7 +7005,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "ApiMusicQuizApiDeployment9AF6ED9C0d8788ebf7b9f1a80eb964316901a5f8"
+     "Ref": "ApiMusicQuizApiDeployment9AF6ED9C5a008ea7448012aacb3fa0f002bcfdd6"
     },
     "MethodSettings": [
      {
@@ -3980,6 +7627,166 @@
    },
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/DELETE/Resource"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdcompleteA2E48DF8": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionId5F059A35"
+    },
+    "PathPart": "complete",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/Resource"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdcompleteOPTIONSB6AE550B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionIdcompleteA2E48DF8"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdcompletePOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTadminquizsessionssessionIdcomplete92E2D03C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCompleteSessionFunction8B7A45CB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/POST/admin/quiz-sessions/*/complete"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..admin.quiz-sessions.{sessionId}.complete"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdcompletePOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTadminquizsessionssessionIdcomplete3A6581A5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCompleteSessionFunction8B7A45CB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/POST/admin/quiz-sessions/*/complete"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..admin.quiz-sessions.{sessionId}.complete"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdcompletePOST1E8E81F1": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsCompleteSessionFunction8B7A45CB",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionIdcompleteA2E48DF8"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/POST/Resource"
    }
   },
   "ApiMusicQuizApiadminquizsessionssessionIdrounds31A64C1C": {
@@ -4687,6 +8494,101 @@
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/OPTIONS/Resource"
    }
   },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETadminquizsessionssessionIdparticipants24777918": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGetParticipantsFunctionBAD55093",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/GET/admin/quiz-sessions/*/participants"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..admin.quiz-sessions.{sessionId}.participants"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETadminquizsessionssessionIdparticipants02339377": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGetParticipantsFunctionBAD55093",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/GET/admin/quiz-sessions/*/participants"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..admin.quiz-sessions.{sessionId}.participants"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsGETF1C79ECA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsGetParticipantsFunctionBAD55093",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionIdparticipants2A7C240C"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/GET/Resource"
+   }
+  },
   "ApiMusicQuizApiadminquizsessionssessionIdparticipantsDELETEApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFDELETEadminquizsessionssessionIdparticipantsD2EF11C2": {
    "Type": "AWS::Lambda::Permission",
    "Properties": {
@@ -4780,6 +8682,261 @@
    },
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/DELETE/Resource"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantId6D798286": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionIdparticipants2A7C240C"
+    },
+    "PathPart": "{participantId}",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/Resource"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdOPTIONSE7D588D9": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantId6D798286"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTadminquizsessionssessionIdparticipantsparticipantId083E42FD": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateParticipantFunction747343C2",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/PUT/admin/quiz-sessions/*/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..admin.quiz-sessions.{sessionId}.participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTadminquizsessionssessionIdparticipantsparticipantId3317BB54": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateParticipantFunction747343C2",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/PUT/admin/quiz-sessions/*/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..admin.quiz-sessions.{sessionId}.participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdPUT83CA26E7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "PUT",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsUpdateParticipantFunction747343C2",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantId6D798286"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/PUT/Resource"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdDELETEApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFDELETEadminquizsessionssessionIdparticipantsparticipantIdDCDDF614": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteParticipantFunction0A357007",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/DELETE/admin/quiz-sessions/*/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/DELETE/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..admin.quiz-sessions.{sessionId}.participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdDELETEApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFDELETEadminquizsessionssessionIdparticipantsparticipantIdF3443371": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteParticipantFunction0A357007",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/DELETE/admin/quiz-sessions/*/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/DELETE/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..admin.quiz-sessions.{sessionId}.participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantIdDELETE2209080E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsDeleteParticipantFunction0A357007",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiadminquizsessionssessionIdparticipantsparticipantId6D798286"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/participants/{participantId}/DELETE/Resource"
    }
   },
   "ApiMusicQuizApiadminaudio60D83F84": {
@@ -5745,6 +9902,299 @@
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/quiz-sessions/{sessionId}/scoreboard/GET/Resource"
    }
   },
+  "ApiMusicQuizApisessions59E0BC24": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "ApiMusicQuizApi59F13877",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "sessions",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/Resource"
+   }
+  },
+  "ApiMusicQuizApisessionsOPTIONSE3F26714": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisessions59E0BC24"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisessionssessionId84B18FDD": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisessions59E0BC24"
+    },
+    "PathPart": "{sessionId}",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/Resource"
+   }
+  },
+  "ApiMusicQuizApisessionssessionIdOPTIONS9206E2D3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisessionssessionId84B18FDD"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisessionssessionIdjoin963F0B8B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisessionssessionId84B18FDD"
+    },
+    "PathPart": "join",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/Resource"
+   }
+  },
+  "ApiMusicQuizApisessionssessionIdjoinOPTIONS0EA5BA24": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisessionssessionIdjoin963F0B8B"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisessionssessionIdjoinPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsessionssessionIdjoinF61EFB5C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsJoinSessionFunction6C175753",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/POST/sessions/*/join"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..sessions.{sessionId}.join"
+   }
+  },
+  "ApiMusicQuizApisessionssessionIdjoinPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsessionssessionIdjoinFBDB9146": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsJoinSessionFunction6C175753",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/POST/sessions/*/join"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..sessions.{sessionId}.join"
+   }
+  },
+  "ApiMusicQuizApisessionssessionIdjoinPOSTEA18F600": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsJoinSessionFunction6C175753",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisessionssessionIdjoin963F0B8B"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/sessions/{sessionId}/join/POST/Resource"
+   }
+  },
   "ApiMusicQuizApiparticipants98E53E99": {
    "Type": "AWS::ApiGateway::Resource",
    "Properties": {
@@ -5884,7 +10334,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "LambdaFunctionsRegisterParticipantFunctionE03DF40A",
+      "LambdaFunctionsRegisterGlobalParticipantFunction643487BD",
       "Arn"
      ]
     },
@@ -5916,7 +10366,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "LambdaFunctionsRegisterParticipantFunctionE03DF40A",
+      "LambdaFunctionsRegisterGlobalParticipantFunction643487BD",
       "Arn"
      ]
     },
@@ -5953,7 +10403,7 @@
         "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
-          "LambdaFunctionsRegisterParticipantFunctionE03DF40A",
+          "LambdaFunctionsRegisterGlobalParticipantFunction643487BD",
           "Arn"
          ]
         },
@@ -5971,6 +10421,261 @@
    },
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/register/POST/Resource"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantId30AECF00": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApiparticipants98E53E99"
+    },
+    "PathPart": "{participantId}",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/Resource"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantIdOPTIONS8BC7A0BC": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiparticipantsparticipantId30AECF00"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantIdGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETparticipantsparticipantId3295DE08": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGetGlobalParticipantFunction43520741",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/GET/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantIdGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETparticipantsparticipantId69B7FF5F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGetGlobalParticipantFunction43520741",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/GET/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantIdGET5098DCFC": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsGetGlobalParticipantFunction43520741",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiparticipantsparticipantId30AECF00"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/GET/Resource"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTparticipantsparticipantIdE9A624BB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateGlobalParticipantFunctionA1644C4C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/PUT/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTparticipantsparticipantId96BDF3A4": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateGlobalParticipantFunctionA1644C4C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/PUT/participants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..participants.{participantId}"
+   }
+  },
+  "ApiMusicQuizApiparticipantsparticipantIdPUT1BA7C059": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "PUT",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsUpdateGlobalParticipantFunctionA1644C4C",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApiparticipantsparticipantId30AECF00"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/participants/{participantId}/PUT/Resource"
    }
   },
   "ApiMusicQuizApiparticipantsanswersFDA1AEFA": {
@@ -6294,6 +10999,1319 @@
    },
    "Metadata": {
     "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/audio/GET/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminF5CB05FE": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "ApiMusicQuizApi59F13877",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "super-admin",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminOPTIONS9AD0FDD4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadminF5CB05FE"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsC6AC0921": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisuperadminF5CB05FE"
+    },
+    "PathPart": "tenants",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsOPTIONS8C11AD07": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantsC6AC0921"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenants313901C9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCreateTenantFunction9C152250",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/POST/super-admin/tenants"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenants1BB26D26": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCreateTenantFunction9C152250",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/POST/super-admin/tenants"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsPOST6631A5FB": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsCreateTenantFunction9C152250",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantsC6AC0921"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/POST/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenants6EF3F34B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsListTenantsFunction00691DB7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/GET/super-admin/tenants"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenants8CAB355E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsListTenantsFunction00691DB7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/GET/super-admin/tenants"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantsGETF73022D5": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsListTenantsFunction00691DB7",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantsC6AC0921"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/GET/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantId621D586D": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantsC6AC0921"
+    },
+    "PathPart": "{tenantId}",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdOPTIONSD5B2B984": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantstenantId621D586D"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadmintenantstenantId76F2596F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateTenantFunction378AFD33",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/PUT/super-admin/tenants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.tenants.{tenantId}"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadmintenantstenantId1A7F0352": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateTenantFunction378AFD33",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/PUT/super-admin/tenants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.tenants.{tenantId}"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdPUT4C9730DF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "PUT",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsUpdateTenantFunction378AFD33",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantstenantId621D586D"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/PUT/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdDELETEApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadmintenantstenantIdD1234805": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteTenantFunction7C672802",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/DELETE/super-admin/tenants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/DELETE/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.tenants.{tenantId}"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdDELETEApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadmintenantstenantId1BE386B6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteTenantFunction7C672802",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/DELETE/super-admin/tenants/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/DELETE/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.tenants.{tenantId}"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdDELETE7AA58E38": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsDeleteTenantFunction7C672802",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantstenantId621D586D"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/DELETE/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsC9623FB4": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantstenantId621D586D"
+    },
+    "PathPart": "admins",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsOPTIONS29E28B5C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantstenantIdadminsC9623FB4"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenantstenantIdadminsE73FA683": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCreateTenantAdminFunction46EEC7EE",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/POST/super-admin/tenants/*/admins"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants.{tenantId}.admins"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadmintenantstenantIdadmins6AE960C7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCreateTenantAdminFunction46EEC7EE",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/POST/super-admin/tenants/*/admins"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.tenants.{tenantId}.admins"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsPOST1B2080E3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsCreateTenantAdminFunction46EEC7EE",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantstenantIdadminsC9623FB4"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/POST/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsGETApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenantstenantIdadminsD9338AE8": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsListTenantAdminsFunction64413C7C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/GET/super-admin/tenants/*/admins"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/GET/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants.{tenantId}.admins"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsGETApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFGETsuperadmintenantstenantIdadmins1CC1B3BF": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsListTenantAdminsFunction64413C7C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/GET/super-admin/tenants/*/admins"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/GET/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.GET..super-admin.tenants.{tenantId}.admins"
+   }
+  },
+  "ApiMusicQuizApisuperadmintenantstenantIdadminsGETCCDDA3D4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsListTenantAdminsFunction64413C7C",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadmintenantstenantIdadminsC9623FB4"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/tenants/{tenantId}/admins/GET/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsC13ADE45": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisuperadminF5CB05FE"
+    },
+    "PathPart": "admins",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsOPTIONS524731C5": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsC13ADE45"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminId43788901": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsC13ADE45"
+    },
+    "PathPart": "{adminId}",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdOPTIONSE4E8D793": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsadminId43788901"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadminadminsadminId1CD2C46F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateTenantAdminFunction0CD2C7DB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/PUT/super-admin/admins/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.admins.{adminId}"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTsuperadminadminsadminId34B29C96": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsUpdateTenantAdminFunction0CD2C7DB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/PUT/super-admin/admins/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..super-admin.admins.{adminId}"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdPUT87943E09": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "PUT",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsUpdateTenantAdminFunction0CD2C7DB",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsadminId43788901"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/PUT/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdDELETEApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadminadminsadminId7F2CF96F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteTenantAdminFunctionEF5EA1F3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/DELETE/super-admin/admins/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/DELETE/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.admins.{adminId}"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdDELETEApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFDELETEsuperadminadminsadminId21765560": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsDeleteTenantAdminFunctionEF5EA1F3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/DELETE/super-admin/admins/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/DELETE/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.DELETE..super-admin.admins.{adminId}"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdDELETE65A72257": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsDeleteTenantAdminFunctionEF5EA1F3",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsadminId43788901"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/DELETE/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdresetpasswordFDD105BD": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsadminId43788901"
+    },
+    "PathPart": "reset-password",
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdresetpasswordOPTIONS33ED7A9C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'https://katrins-music-quiz.kornis.bayern'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "ResponseTemplates": {
+        "application/json": "#set($origin = $input.params().header.get(\"Origin\"))\n#if($origin == \"\")\n  #set($origin = $input.params().header.get(\"origin\"))\n#end\n#if($origin == \"http://localhost:3000\" || $origin == \"http://localhost:5173\")\n  #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\n#end"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsadminIdresetpasswordFDD105BD"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/OPTIONS/Resource"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdresetpasswordPOSTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadminadminsadminIdresetpasswordC2B2AB81": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsResetPasswordAdminFunction53FD33E2",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/",
+       {
+        "Ref": "ApiMusicQuizApiDeploymentStageprod4CFCFB28"
+       },
+       "/POST/super-admin/admins/*/reset-password"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/POST/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.admins.{adminId}.reset-password"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdresetpasswordPOSTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPOSTsuperadminadminsadminIdresetpassword7275E9C5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsResetPasswordAdminFunction53FD33E2",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:967169659906:",
+       {
+        "Ref": "ApiMusicQuizApi59F13877"
+       },
+       "/test-invoke-stage/POST/super-admin/admins/*/reset-password"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/POST/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.POST..super-admin.admins.{adminId}.reset-password"
+   }
+  },
+  "ApiMusicQuizApisuperadminadminsadminIdresetpasswordPOST757809A5": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsResetPasswordAdminFunction53FD33E2",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ApiMusicQuizApisuperadminadminsadminIdresetpasswordFDD105BD"
+    },
+    "RestApiId": {
+     "Ref": "ApiMusicQuizApi59F13877"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MusicQuizStack/Api/MusicQuizApi/Default/super-admin/admins/{adminId}/reset-password/POST/Resource"
    }
   },
   "FrontendFrontendBucket428B8C09": {
@@ -6790,6 +12808,24 @@
    "Description": "DynamoDB Participants table name",
    "Value": {
     "Ref": "DatabaseParticipantsTable0EE3C285"
+   }
+  },
+  "TenantsTableName": {
+   "Description": "DynamoDB Tenants table name",
+   "Value": {
+    "Ref": "DatabaseTenantsTableCCEF727D"
+   }
+  },
+  "GlobalParticipantsTableName": {
+   "Description": "DynamoDB GlobalParticipants table name",
+   "Value": {
+    "Ref": "DatabaseGlobalParticipantsTable0DB1C7D4"
+   }
+  },
+  "SessionParticipationsTableName": {
+   "Description": "DynamoDB SessionParticipations table name",
+   "Value": {
+    "Ref": "DatabaseSessionParticipationsTable031837B3"
    }
   },
   "FrontendBucketName": {

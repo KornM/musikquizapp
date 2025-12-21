@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/admin_login/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 401, 500, 86400, '..', ':username', 'ADMINS_TABLE', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'INVALID_ADMIN_DATA', 'INVALID_CREDENTIALS', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'MusicQuiz-Admins', 'UsernameIndex', 'adminId', 'body', 'common', 'expiresIn', 'password', 'passwordHash', 'required_fields', 'role', 'statusCode', 'tenantId', 'tenant_admin', 'token', 'username', 'username = :username']

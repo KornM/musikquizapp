@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/create_tenant/../common/errors.py
+# hypothesis_version: 6.148.7
+
+['body', 'code', 'details', 'error', 'message', 'statusCode']

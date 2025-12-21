@@ -2,10 +2,11 @@
 List Quiz Sessions Lambda Handler
 
 This Lambda function retrieves all quiz sessions.
-It scans the QuizSessions table and returns a list of all sessions.
+This is a public endpoint - no authentication required.
 
 Endpoint: GET /quiz-sessions
 """
+
 import json
 import os
 import sys
@@ -39,6 +40,8 @@ def lambda_handler(event, context):
     """
     Handle list quiz sessions requests.
 
+    This is a public endpoint - returns all active quiz sessions.
+
     Returns:
         Success (200):
             {
@@ -58,11 +61,11 @@ def lambda_handler(event, context):
         Error (500): Internal server error
     """
     try:
-        # Scan all sessions from DynamoDB
+        # Query all sessions (public endpoint)
         try:
             sessions = scan(QUIZ_SESSIONS_TABLE)
         except Exception as e:
-            print(f"DynamoDB scan error: {str(e)}")
+            print(f"DynamoDB query error: {str(e)}")
             return error_response(
                 500, "DATABASE_ERROR", "Failed to retrieve quiz sessions"
             )
@@ -71,7 +74,22 @@ def lambda_handler(event, context):
         sessions = decimal_to_number(sessions)
 
         # Sort sessions by creation date (newest first)
-        sessions.sort(key=lambda s: s.get("createdAt", "0"), reverse=True)
+        # Handle both string (ISO format) and numeric (Unix timestamp) formats
+        def get_sort_key(session):
+            created_at = session.get("createdAt", 0)
+            if isinstance(created_at, (int, float)):
+                return float(created_at)
+            elif isinstance(created_at, str):
+                try:
+                    from datetime import datetime
+
+                    dt = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+                    return dt.timestamp()
+                except:
+                    return 0
+            return 0
+
+        sessions.sort(key=get_sort_key, reverse=True)
 
         # Return success response
         response = {

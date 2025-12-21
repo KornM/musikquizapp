@@ -1,0 +1,1 @@
+# Delete tenant Lambda function

@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/delete_tenant/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 404, 500, '#status', '..', ':status', ':updatedAt', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'MISSING_TENANT_ID', 'TENANTS_TABLE', 'TENANT_NOT_FOUND', 'Tenants', 'Z', 'body', 'common', 'inactive', 'message', 'pathParameters', 'status', 'statusCode', 'tenantId']

@@ -1,0 +1,1 @@
+# Get Global Participant Lambda

@@ -6,6 +6,7 @@ It validates admin credentials against the DynamoDB Admins table and returns a J
 
 Endpoint: POST /admin/login
 """
+
 import json
 import os
 import sys
@@ -37,7 +38,8 @@ def lambda_handler(event, context):
         Success (200):
             {
                 "token": "jwt_token_string",
-                "expiresIn": 86400
+                "expiresIn": 86400,
+                "tenantId": "uuid"  // Optional, present for tenant admins
             }
 
         Error (400): Invalid request body
@@ -103,19 +105,28 @@ def lambda_handler(event, context):
                 401, "INVALID_CREDENTIALS", "Invalid username or password"
             )
 
-        # Generate JWT token
+        # Generate JWT token with tenant context
         admin_id = admin.get("adminId")
-        token = generate_token(admin_id, "admin")
+        tenant_id = admin.get("tenantId")  # May be None for super admins
+        role = admin.get(
+            "role", "tenant_admin"
+        )  # Default to tenant_admin for backward compatibility
 
-        # Return success response with token
+        token = generate_token(admin_id, role, tenant_id)
+
+        # Return success response with token and tenant context
+        response_body = {
+            "token": token,
+            "expiresIn": 86400,  # 24 hours in seconds
+        }
+
+        # Include tenantId in response if present
+        if tenant_id:
+            response_body["tenantId"] = tenant_id
+
         response = {
             "statusCode": 200,
-            "body": json.dumps(
-                {
-                    "token": token,
-                    "expiresIn": 86400,  # 24 hours in seconds
-                }
-            ),
+            "body": json.dumps(response_body),
         }
 
         return add_cors_headers(response)

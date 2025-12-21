@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/reset_password_admin/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 404, 500, '..', ':passwordHash', ':updatedAt', 'ADMINS_TABLE', 'ADMIN_NOT_FOUND', 'Admin does not exist', 'Admins', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'INVALID_FIELD_VALUE', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'Password is required', 'Z', 'adminId', 'body', 'common', 'message', 'newPassword', 'pathParameters', 'required_fields', 'statusCode']

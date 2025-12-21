@@ -1,0 +1,1 @@
+# Delete Global Participant Lambda

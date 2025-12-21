@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/create_tenant_admin/handler.py
+# hypothesis_version: 6.148.7
+
+[201, 400, 404, 409, 500, '..', ':username', 'ADMINS_TABLE', 'Admins', 'DATABASE_ERROR', 'DUPLICATE_USERNAME', 'INTERNAL_ERROR', 'INVALID_JSON', 'INVALID_REQUEST', 'MISSING_FIELDS', 'TENANTS_TABLE', 'TENANT_INACTIVE', 'TENANT_NOT_FOUND', 'Tenants', 'UsernameIndex', 'Z', 'active', 'adminId', 'body', 'common', 'createdAt', 'email', 'password', 'passwordHash', 'pathParameters', 'required_fields', 'role', 'status', 'statusCode', 'tenantId', 'tenant_admin', 'updatedAt', 'username', 'username = :username']

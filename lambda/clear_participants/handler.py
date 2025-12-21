@@ -5,6 +5,7 @@ This Lambda function deletes all participants and their answers for a session.
 
 Endpoint: DELETE /admin/quiz-sessions/{sessionId}/participants
 """
+
 import json
 import os
 import sys
@@ -15,13 +16,15 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 from auth import validate_token
 from cors import add_cors_headers
 from errors import error_response
-from db import query
+from db import query, get_item
+from tenant_middleware import validate_tenant_access
 import jwt
 import boto3
 
 # Environment variables
 PARTICIPANTS_TABLE = os.environ.get("PARTICIPANTS_TABLE", "MusicQuiz-Participants")
 ANSWERS_TABLE = os.environ.get("ANSWERS_TABLE", "MusicQuiz-Answers")
+QUIZ_SESSIONS_TABLE = os.environ.get("QUIZ_SESSIONS_TABLE", "MusicQuiz-Sessions")
 
 dynamodb = boto3.resource("dynamodb")
 
@@ -45,10 +48,14 @@ def lambda_handler(event, context):
         except jwt.InvalidTokenError:
             return error_response(401, "INVALID_TOKEN", "Invalid token")
 
-        if payload.get("role") != "admin":
+        role = payload.get("role", "admin")
+        if role not in ["admin", "tenant_admin", "super_admin"]:
             return error_response(
                 403, "INSUFFICIENT_PERMISSIONS", "Admin role required"
             )
+
+        # Extract tenant ID from token
+        admin_tenant_id = payload.get("tenantId")
 
         # Extract session ID
         path_parameters = event.get("pathParameters", {})
@@ -56,6 +63,23 @@ def lambda_handler(event, context):
 
         if not session_id:
             return error_response(400, "MISSING_SESSION_ID", "Session ID required")
+
+        # Get session to validate tenant access
+        try:
+            session = get_item(QUIZ_SESSIONS_TABLE, {"sessionId": session_id})
+        except Exception as e:
+            print(f"DynamoDB get error: {str(e)}")
+            return error_response(500, "DATABASE_ERROR", "Failed to retrieve session")
+
+        if not session:
+            return error_response(404, "SESSION_NOT_FOUND", "Session not found")
+
+        # Validate tenant access
+        session_tenant_id = session.get("tenantId")
+        if session_tenant_id:
+            access_error = validate_tenant_access(tenant_context, session_tenant_id)
+            if access_error:
+                return access_error
 
         # Get all participants for this session
         try:

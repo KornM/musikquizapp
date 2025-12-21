@@ -1,6 +1,7 @@
 """
 Lambda function to delete a round from a quiz session.
 """
+
 import json
 import os
 import sys
@@ -11,6 +12,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 from auth import validate_token
 from cors import add_cors_headers
 from errors import error_response
+from tenant_middleware import validate_tenant_access
 import jwt
 import boto3
 from botocore.exceptions import ClientError
@@ -58,10 +60,14 @@ def lambda_handler(event, context):
             return error_response(401, "INVALID_TOKEN", "Invalid token")
 
         # Check if user has admin role
-        if payload.get("role") != "admin":
+        role = payload.get("role", "admin")
+        if role not in ["admin", "tenant_admin", "super_admin"]:
             return error_response(
                 403, "INSUFFICIENT_PERMISSIONS", "Admin role required"
             )
+
+        # Extract tenant ID from token
+        admin_tenant_id = payload.get("tenantId")
 
         # Extract parameters
         path_parameters = event.get("pathParameters", {})
@@ -82,6 +88,21 @@ def lambda_handler(event, context):
 
         sessions_table = dynamodb.Table(QUIZ_SESSIONS_TABLE)
         rounds_table = dynamodb.Table(QUIZ_ROUNDS_TABLE)
+
+        # Get session to validate tenant access
+        session_response = sessions_table.get_item(Key={"sessionId": session_id})
+
+        if "Item" not in session_response:
+            return error_response(404, "SESSION_NOT_FOUND", "Session not found")
+
+        session = session_response["Item"]
+
+        # Validate tenant access
+        session_tenant_id = session.get("tenantId")
+        if session_tenant_id:
+            access_error = validate_tenant_access(tenant_context, session_tenant_id)
+            if access_error:
+                return access_error
 
         # Get the round to find the audio key
         round_response = rounds_table.get_item(

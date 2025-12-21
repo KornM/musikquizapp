@@ -1,19 +1,33 @@
 <template>
   <v-app>
-    <v-app-bar color="primary">
-      <v-app-bar-title>{{ session?.title || "Music Quiz" }}</v-app-bar-title>
+    <v-app-bar color="deep-purple-darken-2" class="app-bar-gradient">
+      <v-icon size="35" class="ml-2 mr-2 rotating-icon">mdi-music-note</v-icon>
+      <v-app-bar-title class="font-weight-bold">
+        {{ session?.title || "🎵 Music Quiz" }}
+      </v-app-bar-title>
       <v-spacer />
-      <v-chip color="success" class="mr-2" size="large">
-        <v-icon start>mdi-trophy</v-icon>
-        {{ totalPoints }} points
+      <v-btn icon variant="text" @click="goToLobby" title="Back to Lobby">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <v-chip color="yellow-darken-2" class="mr-2 points-chip" size="large">
+        <v-icon start class="bounce-icon">mdi-trophy</v-icon>
+        <span class="text-h6 font-weight-bold">{{ totalPoints }}</span>
       </v-chip>
-      <v-chip color="white" variant="outlined" size="large">
+      <v-chip
+        color="white"
+        variant="flat"
+        size="large"
+        class="profile-chip"
+        @click="goToProfile"
+        style="cursor: pointer"
+      >
         <span class="text-h6 mr-2">{{ participantAvatar }}</span>
-        {{ participantName }}
+        <span class="font-weight-bold">{{ participantName }}</span>
+        <v-icon end size="small">mdi-pencil</v-icon>
       </v-chip>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="participant-background">
       <v-container>
         <loading-spinner v-if="loading" message="Loading quiz..." />
 
@@ -32,57 +46,110 @@
           </v-card>
 
           <!-- Current Round Answer Form -->
-          <v-card v-if="currentRound && roundStarted" class="mb-4">
-            <v-card-title>Round {{ currentRound.roundNumber }}</v-card-title>
-            <v-card-text>
+          <v-card
+            v-if="currentRound && roundStarted"
+            class="mb-4 quiz-card"
+            elevation="12"
+          >
+            <div class="round-header">
+              <v-icon size="40" color="white" class="pulse-icon"
+                >mdi-help-circle</v-icon
+              >
+              <span class="text-h5 font-weight-bold text-white ml-3">
+                Round {{ currentRound.roundNumber }}
+              </span>
+            </div>
+
+            <v-card-text class="pa-6">
               <!-- Question -->
-              <v-alert type="info" variant="tonal" class="mb-4">
-                <div class="text-h6">{{ currentRound.question }}</div>
+              <v-alert
+                type="info"
+                variant="tonal"
+                class="mb-6 question-alert"
+                elevation="4"
+              >
+                <v-icon size="30" class="mr-3">mdi-comment-question</v-icon>
+                <span class="text-h6 font-weight-medium">{{
+                  currentRound.question
+                }}</span>
               </v-alert>
 
               <v-alert
                 v-if="submitted"
                 :type="earnedPoints > 0 ? 'success' : 'error'"
-                class="mb-4"
+                class="mb-6 result-alert"
+                elevation="8"
               >
-                <div class="text-h6">Answer submitted!</div>
-                <div v-if="earnedPoints > 0" class="text-h4 mt-2">
-                  🎉 +{{ earnedPoints }} points!
-                </div>
-                <div v-else class="text-h4 mt-2">
-                  ❌ Wrong answer - 0 points
-                </div>
-                <div v-if="earnedPoints === 10" class="text-subtitle-1">
-                  Lightning fast! ⚡
-                </div>
-                <div v-else-if="earnedPoints === 8" class="text-subtitle-1">
-                  Great timing! 🚀
-                </div>
-                <div v-else-if="earnedPoints === 5" class="text-subtitle-1">
-                  Correct! ✓
+                <div class="text-center">
+                  <div class="result-emoji">
+                    {{ earnedPoints > 0 ? "🎉" : "😢" }}
+                  </div>
+                  <div class="text-h5 font-weight-bold mb-2">
+                    {{ earnedPoints > 0 ? "Correct!" : "Wrong Answer" }}
+                  </div>
+                  <div class="text-h3 font-weight-bold mb-2">
+                    {{ earnedPoints > 0 ? `+${earnedPoints}` : "0" }} points
+                  </div>
+                  <div v-if="earnedPoints === 10" class="text-h6">
+                    ⚡ Lightning Fast! ⚡
+                  </div>
+                  <div v-else-if="earnedPoints === 8" class="text-h6">
+                    🚀 Great Timing! 🚀
+                  </div>
+                  <div v-else-if="earnedPoints === 5" class="text-h6">
+                    ✓ Nice Job! ✓
+                  </div>
+                  <div v-else class="text-h6">Better luck next time! 💪</div>
                 </div>
               </v-alert>
 
               <v-form v-else @submit.prevent="submitAnswer">
-                <p class="text-subtitle-1 mb-4">Select your answer:</p>
+                <p class="text-h6 mb-4 font-weight-bold">
+                  <v-icon color="primary" class="mr-2"
+                    >mdi-cursor-pointer</v-icon
+                  >
+                  Select your answer:
+                </p>
                 <v-radio-group v-model="selectedAnswer" :disabled="submitting">
-                  <v-radio
+                  <v-card
                     v-for="(answer, index) in currentRound.answers"
                     :key="index"
-                    :label="`${String.fromCharCode(65 + index)}: ${answer}`"
-                    :value="index"
-                  />
+                    :class="[
+                      'answer-option mb-3',
+                      { selected: selectedAnswer === index },
+                    ]"
+                    @click="selectedAnswer = index"
+                    elevation="4"
+                  >
+                    <v-card-text class="d-flex align-center pa-4">
+                      <v-avatar
+                        :color="getAnswerColor(index)"
+                        size="50"
+                        class="mr-4"
+                      >
+                        <span class="text-h5 font-weight-bold">
+                          {{ String.fromCharCode(65 + index) }}
+                        </span>
+                      </v-avatar>
+                      <span class="text-h6">{{ answer }}</span>
+                      <v-spacer />
+                      <v-radio :value="index" class="radio-hidden" />
+                    </v-card-text>
+                  </v-card>
                 </v-radio-group>
 
                 <v-btn
                   type="submit"
-                  color="primary"
-                  size="large"
+                  color="success"
+                  size="x-large"
                   block
                   :loading="submitting"
                   :disabled="selectedAnswer === null"
+                  class="submit-btn mt-4"
+                  elevation="8"
                 >
-                  Submit Answer
+                  <v-icon start size="30">mdi-send</v-icon>
+                  <span class="text-h6">Submit Answer</span>
                 </v-btn>
               </v-form>
             </v-card-text>
@@ -194,11 +261,14 @@ const session = ref(null);
 const currentRound = ref(null);
 const loading = ref(false);
 const error = ref(null);
+
+// Load participant info from localStorage
+const globalParticipantId = localStorage.getItem("globalParticipantId");
+const globalParticipantToken = localStorage.getItem("globalParticipantToken");
 const participantName = ref(localStorage.getItem("participantName") || "Guest");
 const participantAvatar = ref(
   localStorage.getItem("participantAvatar") || "😀"
 );
-const participantId = localStorage.getItem("participantId");
 
 const selectedAnswer = ref(null);
 const submitting = ref(false);
@@ -206,6 +276,7 @@ const submitted = ref(false);
 const earnedPoints = ref(null);
 const totalPoints = ref(0);
 const roundStarted = ref(false);
+const sessionJoined = ref(false);
 
 let pollInterval = null;
 
@@ -215,8 +286,16 @@ const loadSession = async () => {
     session.value = response.data;
 
     console.log("Session data:", session.value);
+    console.log("Session status:", session.value.status);
     console.log("Current round number:", session.value.currentRound);
     console.log("Available rounds:", session.value.rounds);
+
+    // Check if session is completed - redirect to lobby
+    if (session.value.status === "completed") {
+      console.log("Session is completed, redirecting to lobby");
+      router.push("/lobby");
+      return;
+    }
 
     // Check if there's a current round
     if (session.value.currentRound) {
@@ -258,7 +337,9 @@ const loadParticipantScore = async () => {
   try {
     const response = await api.getScoreboard(sessionId);
     const scoreboard = response.data.scoreboard;
-    const myScore = scoreboard.find((s) => s.participantId === participantId);
+    const myScore = scoreboard.find(
+      (s) => s.participantId === globalParticipantId
+    );
     if (myScore) {
       totalPoints.value = myScore.totalPoints;
     }
@@ -267,13 +348,64 @@ const loadParticipantScore = async () => {
   }
 };
 
+const autoJoinSession = async () => {
+  if (!globalParticipantToken) {
+    console.error("No global participant token found");
+    return false;
+  }
+
+  try {
+    console.log("Auto-joining session:", sessionId);
+    await api.joinSession(sessionId, globalParticipantToken);
+    sessionJoined.value = true;
+    console.log("Successfully joined session");
+    return true;
+  } catch (err) {
+    // If already joined (409 conflict), that's okay - the endpoint is idempotent
+    if (
+      err.response?.status === 409 ||
+      err.response?.data?.error?.code === "ALREADY_JOINED"
+    ) {
+      console.log("Already joined session (idempotent)");
+      sessionJoined.value = true;
+      return true;
+    }
+    console.error("Error joining session:", err);
+    error.value =
+      err.response?.data?.error?.message || "Failed to join session";
+    return false;
+  }
+};
+
+const goToProfile = () => {
+  router.push("/profile");
+};
+
+const goToLobby = () => {
+  router.push("/lobby");
+};
+
+const getAnswerColor = (index) => {
+  const colors = [
+    "deep-purple",
+    "pink",
+    "indigo",
+    "cyan",
+    "teal",
+    "orange",
+    "deep-orange",
+    "blue-grey",
+  ];
+  return colors[index % colors.length];
+};
+
 const submitAnswer = async () => {
   if (selectedAnswer.value === null) return;
 
   submitting.value = true;
   try {
     const response = await api.submitAnswer(
-      participantId,
+      globalParticipantId,
       sessionId,
       currentRound.value.roundNumber,
       selectedAnswer.value
@@ -292,17 +424,26 @@ const submitAnswer = async () => {
 
 onMounted(async () => {
   console.log("QuizView mounted");
-  console.log("Participant ID:", participantId);
+  console.log("Global Participant ID:", globalParticipantId);
   console.log("Session ID:", sessionId);
 
-  // Check if user is registered
-  if (!participantId) {
-    console.log("No participant ID, redirecting to registration");
-    router.push(`/register?sessionId=${sessionId}`);
+  // Check if user has a global participant ID
+  if (!globalParticipantId || !globalParticipantToken) {
+    console.log("No global participant ID, redirecting to lobby");
+    router.push("/lobby");
     return;
   }
 
   loading.value = true;
+
+  // Auto-join the session
+  const joined = await autoJoinSession();
+  if (!joined) {
+    loading.value = false;
+    return;
+  }
+
+  // Load session data
   console.log("Loading initial session data...");
   await loadSession();
   loading.value = false;
@@ -325,13 +466,177 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.participant-background {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.app-bar-gradient {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.rotating-icon {
+  animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bounce-icon {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.points-chip {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+  }
+}
+
+.profile-chip {
+  border: 2px solid #ffd700;
+}
+
+.quiz-card {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.round-header {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-icon {
+  animation: pulse-scale 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-scale {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.question-alert {
+  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%) !important;
+  border-radius: 15px !important;
+  border-left: 5px solid #00bcd4 !important;
+}
+
+.result-alert {
+  border-radius: 20px !important;
+  animation: result-pop 0.5s ease-out;
+}
+
+@keyframes result-pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.result-emoji {
+  font-size: 5rem;
+  animation: emoji-bounce 0.6s ease-out;
+}
+
+@keyframes emoji-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-30px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  75% {
+    transform: translateY(-7px);
+  }
+}
+
+.answer-option {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 15px !important;
+  border: 3px solid transparent;
+}
+
+.answer-option:hover {
+  transform: translateX(10px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.answer-option.selected {
+  border-color: #4caf50;
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+  transform: scale(1.05);
+}
+
+.radio-hidden {
+  opacity: 0;
+}
+
+.submit-btn {
+  background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%) !important;
+  border-radius: 15px !important;
+  animation: button-glow 2s ease-in-out infinite;
+}
+
+@keyframes button-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+  }
+}
+
 .welcome-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  border-radius: 20px !important;
 }
 
 .music-notes {
-  font-size: 3rem;
+  font-size: 4rem;
   display: flex;
   justify-content: center;
   gap: 2rem;
@@ -340,6 +645,7 @@ onUnmounted(() => {
 .note {
   display: inline-block;
   animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
 }
 
 .note:nth-child(1) {
@@ -357,10 +663,10 @@ onUnmounted(() => {
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-30px) rotate(10deg);
   }
 }
 </style>

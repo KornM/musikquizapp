@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/get_global_participant/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 404, 500, '..', 'DATABASE_ERROR', 'GlobalParticipants', 'INTERNAL_ERROR', 'MISSING_FIELDS', 'avatar', 'body', 'common', 'createdAt', 'name', 'participantId', 'pathParameters', 'statusCode', 'tenantId']

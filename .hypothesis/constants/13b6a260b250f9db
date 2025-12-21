@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/get_participants/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 401, 403, 404, 500, '..', ':sessionId', 'Admin role required', 'Authorization', 'Bearer ', 'CROSS_TENANT_ACCESS', 'DATABASE_ERROR', 'GlobalParticipants', 'INTERNAL_ERROR', 'INVALID_AUTH_FORMAT', 'INVALID_TOKEN', 'Invalid token', 'MISSING_SESSION_ID', 'MISSING_TOKEN', 'PARTICIPANTS_TABLE', 'QUIZ_SESSIONS_TABLE', 'QuizSessions', 'SESSION_NOT_FOUND', 'SessionIndex', 'TOKEN_EXPIRED', 'Token has expired', 'admin', 'authorization', 'avatar', 'body', 'common', 'correctAnswers', 'headers', 'joinedAt', 'name', 'participantId', 'participants', 'participationId', 'pathParameters', 'role', 'sessionId', 'statusCode', 'super_admin', 'tenantId', 'tenant_admin', 'totalPoints']

@@ -1,8 +1,0 @@
-- music player
-- dashboard für winner
-- richte antwort je schneller umso mehr punkte
-- verschiedene typen:
-  - text weiter
-  - song erkennen
-  - interpret erkennen
-  - film anhand vom song erkennen

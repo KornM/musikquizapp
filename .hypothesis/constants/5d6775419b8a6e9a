@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/get_scoreboard/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 400, 404, 500, '..', ':sessionId', 'ANSWERS_TABLE', 'DATABASE_ERROR', 'GlobalParticipants', 'INTERNAL_ERROR', 'MISSING_SESSION_ID', 'MusicQuiz-Answers', 'MusicQuiz-Sessions', 'PARTICIPANTS_TABLE', 'QUIZ_SESSIONS_TABLE', 'SESSION_NOT_FOUND', 'SessionIndex', 'Unknown', 'avatar', 'body', 'common', 'correctAnswers', 'name', 'participantId', 'pathParameters', 'rank', 'scoreboard', 'sessionId', 'statusCode', 'tenantId', 'totalPoints', '😀']

@@ -2,10 +2,11 @@
 Get Quiz Session Lambda Handler
 
 This Lambda function retrieves a quiz session with all its rounds.
-It queries the QuizSessions and QuizRounds tables and returns the complete session data.
+This is a public endpoint - no authentication required.
 
 Endpoint: GET /quiz-sessions/{sessionId}
 """
+
 import json
 import os
 import sys
@@ -39,6 +40,8 @@ def decimal_to_number(obj):
 def lambda_handler(event, context):
     """
     Handle get quiz session requests.
+
+    This is a public endpoint - returns session details with rounds.
 
     Expected path parameters:
         sessionId: UUID of the quiz session

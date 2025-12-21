@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/create_quiz/handler.py
+# hypothesis_version: 6.148.7
+
+[201, 400, 500, '..', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'INVALID_JSON', 'INVALID_MEDIA_TYPE', 'INVALID_REQUEST', 'MISSING_FIELDS', 'MISSING_TENANT_ID', 'MusicQuiz-Sessions', 'QUIZ_SESSIONS_TABLE', 'Title is required', 'adminId', 'audio', 'body', 'common', 'createdAt', 'createdBy', 'description', 'draft', 'image', 'mediaType', 'none', 'provided', 'required_fields', 'role', 'roundCount', 'sessionId', 'status', 'statusCode', 'super_admin', 'tenantId', 'title', 'valid']

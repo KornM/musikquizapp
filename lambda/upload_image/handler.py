@@ -6,6 +6,7 @@ It validates the admin JWT token, generates a unique S3 key, and uploads the ima
 
 Endpoint: POST /admin/image
 """
+
 import json
 import os
 import sys
@@ -19,6 +20,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 from auth import validate_token
 from cors import add_cors_headers
 from errors import error_response
+from db import get_item
+from tenant_middleware import validate_tenant_access
 import jwt
 import boto3
 from botocore.exceptions import ClientError
@@ -26,6 +29,7 @@ from botocore.exceptions import ClientError
 
 # Environment variables
 AUDIO_BUCKET = os.environ.get("AUDIO_BUCKET", "music-quiz-audio")
+QUIZ_SESSIONS_TABLE = os.environ.get("QUIZ_SESSIONS_TABLE", "MusicQuiz-Sessions")
 
 # Initialize S3 client
 s3_client = boto3.client("s3")
@@ -89,10 +93,14 @@ def lambda_handler(event, context):
             return error_response(401, "INVALID_TOKEN", "Invalid token")
 
         # Check if user has admin role
-        if payload.get("role") != "admin":
+        role = payload.get("role", "admin")
+        if role not in ["admin", "tenant_admin", "super_admin"]:
             return error_response(
                 403, "INSUFFICIENT_PERMISSIONS", "Admin role required"
             )
+
+        # Extract tenant ID from token
+        admin_tenant_id = payload.get("tenantId")
 
         # Parse request body
         if not event.get("body"):
@@ -161,6 +169,22 @@ def lambda_handler(event, context):
                     "MISSING_SESSION_ID",
                     "sessionId is required in query parameters or JSON body",
                 )
+
+        # Validate tenant access to session
+        try:
+            session = get_item(QUIZ_SESSIONS_TABLE, {"sessionId": session_id})
+        except Exception as e:
+            print(f"DynamoDB get error for session: {str(e)}")
+            return error_response(500, "DATABASE_ERROR", "Failed to retrieve session")
+
+        if not session:
+            return error_response(404, "SESSION_NOT_FOUND", "Session not found")
+
+        session_tenant_id = session.get("tenantId")
+        if session_tenant_id:
+            access_error = validate_tenant_access(tenant_context, session_tenant_id)
+            if access_error:
+                return access_error
 
         # Extract file extension
         file_extension = file_name.split(".")[-1] if "." in file_name else "jpg"

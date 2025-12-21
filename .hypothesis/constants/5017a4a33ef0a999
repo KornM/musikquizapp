@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/list_tenants/handler.py
+# hypothesis_version: 6.148.7
+
+[200, 500, '#status', '#status = :status', '..', ':status', 'DATABASE_ERROR', 'INTERNAL_ERROR', 'StatusIndex', 'TENANTS_TABLE', 'Tenants', 'body', 'common', 'createdAt', 'description', 'name', 'status', 'statusCode', 'tenantId', 'tenants']

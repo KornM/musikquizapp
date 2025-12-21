@@ -1,0 +1,4 @@
+# file: /Users/uid01971/Playground/musikquizapp/lambda/create_quiz/../common/tenant_middleware.py
+# hypothesis_version: 6.148.7
+
+[400, 401, 403, 404, 500, 'Authorization', 'Bearer ', 'CROSS_TENANT_ACCESS', 'DATABASE_ERROR', 'HS256', 'INVALID_AUTH_FORMAT', 'INVALID_TOKEN', 'Invalid token', 'JWT_SECRET', 'MISSING_TENANT_ID', 'MISSING_TOKEN', 'MusicQuiz-Tenants', 'TENANTS_TABLE', 'TENANT_INACTIVE', 'TENANT_NOT_FOUND', 'TOKEN_EXPIRED', 'Token has expired', 'active', 'admin', 'adminId', 'adminTenantId', 'authorization', 'headers', 'resourceTenantId', 'role', 'status', 'statusCode', 'sub', 'super_admin', 'tenantId', 'tenant_admin']

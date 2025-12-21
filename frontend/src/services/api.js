@@ -11,7 +11,11 @@ const apiClient = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken')
+    // Check for admin token first, then participant token
+    const adminToken = localStorage.getItem('authToken')
+    const participantToken = localStorage.getItem('globalParticipantToken')
+    
+    const token = adminToken || participantToken
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -27,9 +31,28 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
-      localStorage.removeItem('authToken')
-      router.push('/admin/login')
+      // Check if this is an admin or participant request
+      const isAdminRoute = window.location.pathname.startsWith('/admin')
+      
+      if (isAdminRoute) {
+        // Clear admin token and redirect to admin login
+        localStorage.removeItem('authToken')
+        router.push('/admin/login')
+      } else {
+        // For participant routes, clear participant data and redirect to registration
+        // But only if we're not already on a registration page
+        if (!window.location.pathname.includes('/register')) {
+          localStorage.removeItem('globalParticipantId')
+          localStorage.removeItem('globalParticipantToken')
+          localStorage.removeItem('globalParticipantTenantId')
+          
+          // Try to preserve session ID if available
+          const sessionId = window.location.pathname.match(/\/quiz\/([^/]+)/)?.[1]
+          if (sessionId) {
+            router.push(`/register?sessionId=${sessionId}`)
+          }
+        }
+      }
     }
     return Promise.reject(error)
   }
@@ -112,7 +135,29 @@ export default {
     return apiClient.get(`/quiz-sessions/${sessionId}/qr`)
   },
 
-  // Participants
+  // Participants - Global Registration
+  registerGlobalParticipant(tenantId, name, avatar) {
+    return apiClient.post('/participants/register', { tenantId, name, avatar })
+  },
+
+  getGlobalParticipant(participantId) {
+    return apiClient.get(`/participants/${participantId}`)
+  },
+
+  updateGlobalParticipant(participantId, data) {
+    return apiClient.put(`/participants/${participantId}`, data)
+  },
+
+  // Session Participation
+  joinSession(sessionId, participantToken) {
+    return apiClient.post(`/sessions/${sessionId}/join`, {}, {
+      headers: {
+        'Authorization': `Bearer ${participantToken}`
+      }
+    })
+  },
+
+  // Legacy - Session-specific registration (for backward compatibility)
   registerParticipant(sessionId, name, avatar) {
     return apiClient.post('/participants/register', { sessionId, name, avatar })
   },
@@ -141,7 +186,19 @@ export default {
     return apiClient.delete(`/admin/quiz-sessions/${sessionId}/points`)
   },
 
-  // Admin - Clear Participants
+  // Admin - Participant Management
+  getParticipants(sessionId) {
+    return apiClient.get(`/admin/quiz-sessions/${sessionId}/participants`)
+  },
+
+  updateParticipant(sessionId, participantId, data) {
+    return apiClient.put(`/admin/quiz-sessions/${sessionId}/participants/${participantId}`, data)
+  },
+
+  deleteParticipant(sessionId, participantId) {
+    return apiClient.delete(`/admin/quiz-sessions/${sessionId}/participants/${participantId}`)
+  },
+
   clearParticipants(sessionId) {
     return apiClient.delete(`/admin/quiz-sessions/${sessionId}/participants`)
   },
@@ -151,7 +208,53 @@ export default {
     return apiClient.delete(`/admin/quiz-sessions/${sessionId}`)
   },
 
+  completeSession(sessionId) {
+    return apiClient.post(`/admin/quiz-sessions/${sessionId}/complete`)
+  },
+
   deleteRound(sessionId, roundNumber) {
     return apiClient.delete(`/admin/quiz-sessions/${sessionId}/rounds/${roundNumber}`)
+  },
+
+  // Super Admin - Tenant Management
+  getTenants() {
+    return apiClient.get('/super-admin/tenants')
+  },
+
+  getTenant(tenantId) {
+    return apiClient.get(`/super-admin/tenants/${tenantId}`)
+  },
+
+  createTenant(data) {
+    return apiClient.post('/super-admin/tenants', data)
+  },
+
+  updateTenant(tenantId, data) {
+    return apiClient.put(`/super-admin/tenants/${tenantId}`, data)
+  },
+
+  deleteTenant(tenantId) {
+    return apiClient.delete(`/super-admin/tenants/${tenantId}`)
+  },
+
+  // Super Admin - Tenant Admin Management
+  getTenantAdmins(tenantId) {
+    return apiClient.get(`/super-admin/tenants/${tenantId}/admins`)
+  },
+
+  createTenantAdmin(tenantId, data) {
+    return apiClient.post(`/super-admin/tenants/${tenantId}/admins`, data)
+  },
+
+  updateTenantAdmin(adminId, data) {
+    return apiClient.put(`/super-admin/admins/${adminId}`, data)
+  },
+
+  deleteTenantAdmin(adminId) {
+    return apiClient.delete(`/super-admin/admins/${adminId}`)
+  },
+
+  resetAdminPassword(adminId, newPassword) {
+    return apiClient.post(`/super-admin/admins/${adminId}/reset-password`, { newPassword })
   }
 }

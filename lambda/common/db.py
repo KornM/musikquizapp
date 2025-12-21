@@ -1,6 +1,7 @@
 """
 Database utility module for DynamoDB operations.
 """
+
 import boto3
 from botocore.exceptions import ClientError
 
@@ -198,3 +199,31 @@ def update_item(
         return response.get("Attributes")
     except ClientError as e:
         raise ClientError(error_response=e.response, operation_name="UpdateItem")
+
+
+def validate_tenant_access(resource_tenant_id, user_tenant_id, user_role):
+    """
+    Validate that a user has access to a resource based on tenant isolation.
+
+    Args:
+        resource_tenant_id (str): Tenant ID of the resource being accessed
+        user_tenant_id (str): Tenant ID of the user making the request
+        user_role (str): Role of the user (super_admin, tenant_admin, admin)
+
+    Returns:
+        bool: True if access is allowed, False otherwise
+    """
+    # Super admins can access all resources
+    if user_role == "super_admin":
+        return True
+
+    # If resource has no tenant ID, allow access (backward compatibility)
+    if not resource_tenant_id:
+        return True
+
+    # If user has no tenant ID, deny access to tenant-specific resources
+    if not user_tenant_id:
+        return False
+
+    # Tenant admins can only access resources from their tenant
+    return resource_tenant_id == user_tenant_id
