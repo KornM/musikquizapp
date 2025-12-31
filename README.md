@@ -68,12 +68,14 @@ A modern, multi-tenant music quiz application built with AWS serverless architec
 2. **Deploy Backend**
    ```bash
    cd cdk
-   python -m venv venv
+   python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    cdk bootstrap  # First time only
    cdk deploy
    ```
+   
+   Save the CDK outputs - you'll need the `ApiGatewayUrl`.
 
 3. **Configure Frontend**
    ```bash
@@ -87,12 +89,14 @@ A modern, multi-tenant music quiz application built with AWS serverless architec
 4. **Create Super Admin**
    ```bash
    cd ../scripts
-   python create_super_admin.py
+   python3 create_super_admin.py
    ```
 
 5. **Access Application**
    - Admin: `https://your-cloudfront-domain/admin/login`
-   - Participant: Use QR code from quiz sessions
+   - Participant: `https://your-cloudfront-domain/lobby`
+
+For detailed deployment instructions, see `DEPLOYMENT.md`.
 
 ## 📖 User Guide
 
@@ -107,8 +111,10 @@ A modern, multi-tenant music quiz application built with AWS serverless architec
 6. Start the session when ready
 
 **Managing a Session:**
+- **Start Session**: Change status from draft to active
 - **Start Round**: Begin a specific round for participants
-- **View Scoreboard**: See live participant rankings
+- **View Scoreboard**: See live participant rankings for current session
+- **View Global Scoreboard**: See aggregate scores across all sessions
 - **Complete Session**: End the session and prevent new answers
 - **Generate QR Code**: Share for easy participant registration
 
@@ -166,17 +172,19 @@ VITE_API_BASE_URL=https://your-api-gateway-url
 
 ### Tables
 - **Tenants**: Organization/tenant information
-- **Admins**: Admin user accounts
-- **GlobalParticipants**: Participant profiles (tenant-wide)
-- **SessionParticipations**: Session enrollment tracking
-- **QuizSessions**: Quiz session metadata
-- **QuizRounds**: Questions and answers
-- **Answers**: Participant responses
+- **Admins**: Admin user accounts (super admins and tenant admins)
+- **GlobalParticipants**: Participant profiles (tenant-wide, one registration per tenant)
+- **SessionParticipations**: Tracks which participants joined which sessions
+- **QuizSessions**: Quiz session metadata and configuration
+- **QuizRounds**: Individual questions with 4 answer options
+- **Answers**: Participant responses with timestamps and scoring
 
-### Indexes
-- **TenantIndex**: Query by tenant
-- **SessionIndex**: Query by session
-- **ParticipantIndex**: Query by participant
+### Key Features
+- **Multi-tenancy**: Complete data isolation between tenants
+- **Global Participants**: Register once per tenant, join multiple sessions
+- **Session Lifecycle**: Draft → Active → Completed states
+- **Time-based Scoring**: Points awarded based on answer speed
+- **Global Leaderboard**: Aggregate scores across all sessions per tenant
 
 ## 🧪 Testing
 
@@ -215,5 +223,5 @@ Built with modern serverless technologies for scalability and performance.
 
 ---
 
-**Version**: 2.0.0  
-**Last Updated**: December 2024
+**Version**: 2.1.0  
+**Last Updated**: December 21, 2024

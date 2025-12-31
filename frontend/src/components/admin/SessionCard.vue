@@ -92,9 +92,29 @@
           Present
         </v-btn>
         <v-btn
-          v-if="session.status === 'active'"
+          v-if="session.status === 'draft'"
           variant="tonal"
           color="success"
+          prepend-icon="mdi-play-circle"
+          @click="activateSession"
+          :loading="activating"
+        >
+          Activate
+        </v-btn>
+        <v-btn
+          v-if="session.status === 'active'"
+          variant="tonal"
+          color="warning"
+          prepend-icon="mdi-pause-circle"
+          @click="deactivateSession"
+          :loading="deactivating"
+        >
+          Deactivate
+        </v-btn>
+        <v-btn
+          v-if="session.status === 'active'"
+          variant="tonal"
+          color="info"
           prepend-icon="mdi-check-circle"
           @click="confirmComplete"
         >
@@ -185,7 +205,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["deleted", "completed"]);
+const emit = defineEmits(["deleted", "completed", "updated"]);
 
 const router = useRouter();
 const qrDialog = ref(false);
@@ -193,6 +213,8 @@ const deleteDialog = ref(false);
 const completeDialog = ref(false);
 const deleting = ref(false);
 const completing = ref(false);
+const activating = ref(false);
+const deactivating = ref(false);
 const scoreboard = ref([]);
 const loadingScoreboard = ref(false);
 
@@ -320,6 +342,32 @@ const handleComplete = async () => {
     console.error("Failed to complete session:", err);
   } finally {
     completing.value = false;
+  }
+};
+
+const activateSession = async () => {
+  activating.value = true;
+  try {
+    await api.updateSession(props.session.sessionId, { status: "active" });
+    // Emit event to refresh session list
+    emit("updated", props.session.sessionId);
+  } catch (err) {
+    console.error("Failed to activate session:", err);
+  } finally {
+    activating.value = false;
+  }
+};
+
+const deactivateSession = async () => {
+  deactivating.value = true;
+  try {
+    await api.updateSession(props.session.sessionId, { status: "draft" });
+    // Emit event to refresh session list
+    emit("updated", props.session.sessionId);
+  } catch (err) {
+    console.error("Failed to deactivate session:", err);
+  } finally {
+    deactivating.value = false;
   }
 };
 

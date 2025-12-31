@@ -124,6 +124,7 @@ def lambda_handler(event, context):
         # Check if participation exists (SessionParticipations table)
         try:
             # Query SessionParticipations by participantId and sessionId
+            print(f"Querying participations for participantId: {participant_id}")
             participations = query(
                 SESSION_PARTICIPATIONS_TABLE,
                 "participantId = :participantId",
@@ -131,26 +132,40 @@ def lambda_handler(event, context):
                 index_name="ParticipantIndex",
             )
 
+            print(
+                f"Found {len(participations)} participations for participant {participant_id}"
+            )
+
             # Find the participation for this specific session
             participation = None
             for p in participations:
+                print(
+                    f"Checking participation: sessionId={p.get('sessionId')}, target={session_id}"
+                )
                 if p.get("sessionId") == session_id:
                     participation = p
                     break
 
             if not participation:
+                print(
+                    f"No participation found for participant {participant_id} in session {session_id}"
+                )
                 return error_response(
                     404,
                     "PARTICIPATION_NOT_FOUND",
-                    "Participant is not in this session",
+                    f"Participant {participant_id} is not in session {session_id}",
                 )
 
             participation_id = participation.get("participationId")
+            print(f"Found participation ID: {participation_id}")
 
         except Exception as e:
             print(f"DynamoDB query error: {str(e)}")
+            import traceback
+
+            traceback.print_exc()
             return error_response(
-                500, "DATABASE_ERROR", "Failed to retrieve participation"
+                500, "DATABASE_ERROR", f"Failed to retrieve participation: {str(e)}"
             )
 
         # Delete participant's answers for this session

@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 
 from cors import add_cors_headers
 from errors import error_response
-from db import update_item
+from db import update_item, scan
 from participant_middleware import require_participant_auth
 
 
@@ -105,6 +105,35 @@ def lambda_handler(event, context):
 
         # Get participant from context (already validated by middleware)
         participant = participant_context["participant"]
+        tenant_id = participant.get("tenantId")
+
+        # If updating name, check for duplicates
+        if name and name != participant.get("name"):
+            try:
+                # Scan for participants with the same name in this tenant (excluding current participant)
+                existing_participants = scan(
+                    GLOBAL_PARTICIPANTS_TABLE,
+                    filter_expression="tenantId = :tenantId AND #name = :name AND participantId <> :participantId",
+                    expression_attribute_values={
+                        ":tenantId": tenant_id,
+                        ":name": name.strip(),
+                        ":participantId": participant_id,
+                    },
+                    expression_attribute_names={"#name": "name"},
+                )
+
+                if existing_participants and len(existing_participants) > 0:
+                    return error_response(
+                        409,
+                        "NICKNAME_TAKEN",
+                        f"The nickname '{name}' is already taken. Please choose a different name.",
+                    )
+            except Exception as e:
+                print(f"DynamoDB scan error checking nickname: {str(e)}")
+                # Continue with update if scan fails (don't block update)
+                import traceback
+
+                traceback.print_exc()
 
         # Build update expression
         update_expression_parts = []

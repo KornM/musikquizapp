@@ -253,17 +253,26 @@ const confirmDelete = (participant) => {
 
 const deleteParticipant = async () => {
   deleting.value = true;
+  error.value = null; // Clear previous errors
   try {
     await api.deleteParticipant(
       props.sessionId,
       deleteTarget.value.participantId
     );
     deleteDialog.value = false;
+    deleteTarget.value = null;
     await loadParticipants();
     emit("updated");
   } catch (err) {
-    error.value =
-      err.response?.data?.error?.message || "Failed to delete participant";
+    console.error("Delete participant error:", err);
+    console.error("Error response:", err.response);
+    const errorMessage =
+      err.response?.data?.error?.message ||
+      err.response?.data?.message ||
+      err.message ||
+      "Failed to delete participant";
+    error.value = errorMessage;
+    deleteDialog.value = false; // Close dialog to show error
   } finally {
     deleting.value = false;
   }

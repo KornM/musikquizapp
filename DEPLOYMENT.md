@@ -16,7 +16,7 @@ Complete guide for deploying the Music Quiz Application to AWS.
 - AWS region selected (default: us-east-1)
 - Sufficient service limits for:
   - Lambda functions (~35 functions)
-  - DynamoDB tables (8 tables)
+  - DynamoDB tables (7 tables)
   - S3 buckets (1 bucket)
   - CloudFront distribution (1 distribution)
   - API Gateway (1 REST API)
@@ -114,7 +114,7 @@ aws cloudfront create-invalidation \
 cd ../scripts
 
 # Run the super admin creation script
-python create_super_admin.py
+python3 create_super_admin.py
 
 # Follow the prompts to create your super admin account
 # Save the credentials securely!
@@ -149,14 +149,13 @@ curl https://your-api-gateway-url/quiz-sessions
 # List DynamoDB tables
 aws dynamodb list-tables
 
-# Should see all 8 tables:
+# Should see all tables:
 # - Tenants
 # - Admins
 # - GlobalParticipants
 # - SessionParticipations
 # - QuizSessions
 # - QuizRounds
-# - Participants (legacy)
 # - Answers
 ```
 
@@ -332,5 +331,5 @@ After successful deployment:
 
 ---
 
-**Deployment Version**: 2.0.0  
-**Last Updated**: December 2024
+**Deployment Version**: 2.1.0  
+**Last Updated**: December 21, 2024

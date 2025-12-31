@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 from auth import generate_token
 from cors import add_cors_headers
 from errors import error_response
-from db import get_item, put_item
+from db import get_item, put_item, scan
 
 
 # Environment variables
@@ -106,6 +106,34 @@ def lambda_handler(event, context):
             return error_response(
                 403, "TENANT_INACTIVE", f"Tenant {tenant_id} is not active"
             )
+
+        # Check if nickname is already taken in this tenant
+        try:
+            # Scan for participants with the same name in this tenant
+            existing_participants = scan(
+                GLOBAL_PARTICIPANTS_TABLE,
+                filter_expression="tenantId = :tenantId AND #name = :name",
+                expression_attribute_values={
+                    ":tenantId": tenant_id,
+                    ":name": name.strip(),  # Trim whitespace for comparison
+                },
+                expression_attribute_names={
+                    "#name": "name"
+                },  # 'name' is a reserved word
+            )
+
+            if existing_participants and len(existing_participants) > 0:
+                return error_response(
+                    409,
+                    "NICKNAME_TAKEN",
+                    f"The nickname '{name}' is already taken. Please choose a different name.",
+                )
+        except Exception as e:
+            print(f"DynamoDB scan error checking nickname: {str(e)}")
+            # Continue with registration if scan fails (don't block registration)
+            import traceback
+
+            traceback.print_exc()
 
         # Generate participant ID and timestamp
         participant_id = str(uuid.uuid4())

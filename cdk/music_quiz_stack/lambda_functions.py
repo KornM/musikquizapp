@@ -402,6 +402,7 @@ class LambdaFunctions(Construct):
             memory_size=256,
         )
         participants_table.grant_read_write_data(self.clear_participants)
+        session_participations_table.grant_read_write_data(self.clear_participants)
         answers_table.grant_read_write_data(self.clear_participants)
         quiz_sessions_table.grant_read_data(
             self.clear_participants
@@ -460,6 +461,8 @@ class LambdaFunctions(Construct):
             memory_size=256,
         )
         participants_table.grant_read_write_data(self.delete_participant)
+        session_participations_table.grant_read_write_data(self.delete_participant)
+        global_participants_table.grant_read_data(self.delete_participant)
         answers_table.grant_read_write_data(self.delete_participant)
         quiz_sessions_table.grant_read_data(
             self.delete_participant
@@ -659,6 +662,22 @@ class LambdaFunctions(Construct):
             memory_size=256,
         )
         global_participants_table.grant_read_write_data(self.update_global_participant)
+
+        # Update Session Lambda
+        self.update_session = lambda_.Function(
+            self,
+            "UpdateSessionFunction",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.lambda_handler",
+            code=lambda_.Code.from_asset(
+                os.path.join(project_root, "lambda", "update_session")
+            ),
+            environment=common_environment,
+            layers=[common_layer],
+            timeout=Duration.seconds(30),
+            memory_size=256,
+        )
+        quiz_sessions_table.grant_read_write_data(self.update_session)
 
         # Join Session Lambda
         self.join_session = lambda_.Function(

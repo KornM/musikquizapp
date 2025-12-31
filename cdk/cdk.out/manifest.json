@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-deploy-role-967169659906-eu-central-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::967169659906:role/cdk-hnb659fds-cfn-exec-role-967169659906-eu-central-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-967169659906-eu-central-1/92488476e2d9a978bc6b7d24ef5b3f17ad17950100fcd39ad5c0a39328bc08ab.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-967169659906-eu-central-1/fb8ad8b21a1cb59b6ca8005cd7c665a670dfb3d4b558e1d3af418433d703f46f.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -758,6 +758,24 @@
             "data": "LambdaFunctionsUpdateGlobalParticipantFunctionA1644C4C"
           }
         ],
+        "/MusicQuizStack/LambdaFunctions/UpdateSessionFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateSessionFunctionServiceRoleBC72CD7E"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateSessionFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateSessionFunctionServiceRoleDefaultPolicyCFAB4FED"
+          }
+        ],
+        "/MusicQuizStack/LambdaFunctions/UpdateSessionFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsUpdateSessionFunctionD7F342F5"
+          }
+        ],
         "/MusicQuizStack/LambdaFunctions/JoinSessionFunction/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -797,7 +815,7 @@
         "/MusicQuizStack/Api/MusicQuizApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ApiMusicQuizApiDeployment9AF6ED9C5a008ea7448012aacb3fa0f002bcfdd6"
+            "data": "ApiMusicQuizApiDeployment9AF6ED9Cc3b9e6229669a2da673d8aa2e65b5a9e"
           }
         ],
         "/MusicQuizStack/Api/MusicQuizApi/DeploymentStage.prod/Resource": [
@@ -918,6 +936,24 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiMusicQuizApiadminquizsessionssessionIdDELETEF72629B5"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/PUT/ApiPermission.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..admin.quiz-sessions.{sessionId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdPUTApiPermissionMusicQuizStackApiMusicQuizApi396F5ECFPUTadminquizsessionssessionId45238496"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/PUT/ApiPermission.Test.MusicQuizStackApiMusicQuizApi396F5ECF.PUT..admin.quiz-sessions.{sessionId}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdPUTApiPermissionTestMusicQuizStackApiMusicQuizApi396F5ECFPUTadminquizsessionssessionIdAFE8D99C"
+          }
+        ],
+        "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/PUT/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiMusicQuizApiadminquizsessionssessionIdPUT00424401"
           }
         ],
         "/MusicQuizStack/Api/MusicQuizApi/Default/admin/quiz-sessions/{sessionId}/complete/Resource": [

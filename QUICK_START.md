@@ -22,7 +22,7 @@ npm run build
 
 # 3. Create super admin
 cd ../scripts
-python create_super_admin.py
+python3 create_super_admin.py
 ```
 
 ## 🔄 Daily Operations
@@ -169,7 +169,7 @@ cd cdk && cdk deploy
 
 ```bash
 cd scripts
-python create_super_admin.py
+python3 create_super_admin.py
 # Choose same username to update password
 ```
 

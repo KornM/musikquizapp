@@ -39,9 +39,16 @@ apiClient.interceptors.response.use(
         localStorage.removeItem('authToken')
         router.push('/admin/login')
       } else {
-        // For participant routes, clear participant data and redirect to registration
-        // But only if we're not already on a registration page
-        if (!window.location.pathname.includes('/register')) {
+        // For participant routes, clear participant data
+        // But don't redirect if we're on the registration page - just clear the data
+        // so they can re-register
+        if (window.location.pathname.includes('/register')) {
+          // On registration page - just clear expired data, don't redirect
+          localStorage.removeItem('globalParticipantId')
+          localStorage.removeItem('globalParticipantToken')
+          localStorage.removeItem('globalParticipantTenantId')
+        } else {
+          // Not on registration page - clear data and redirect
           localStorage.removeItem('globalParticipantId')
           localStorage.removeItem('globalParticipantToken')
           localStorage.removeItem('globalParticipantTenantId')
@@ -210,6 +217,10 @@ export default {
 
   completeSession(sessionId) {
     return apiClient.post(`/admin/quiz-sessions/${sessionId}/complete`)
+  },
+
+  updateSession(sessionId, data) {
+    return apiClient.put(`/admin/quiz-sessions/${sessionId}`, data)
   },
 
   deleteRound(sessionId, roundNumber) {

@@ -1,7 +1,8 @@
 """
 Clear Participants Lambda Handler
 
-This Lambda function deletes all participants and their answers for a session.
+This Lambda function removes all participants from a session by deleting
+their SessionParticipations and associated answers.
 
 Endpoint: DELETE /admin/quiz-sessions/{sessionId}/participants
 """
@@ -16,17 +17,17 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "common"))
 from auth import validate_token
 from cors import add_cors_headers
 from errors import error_response
-from db import query, get_item
+from db import query, get_item, delete_item, scan
 from tenant_middleware import validate_tenant_access
 import jwt
-import boto3
 
 # Environment variables
+SESSION_PARTICIPATIONS_TABLE = os.environ.get(
+    "SESSION_PARTICIPATIONS_TABLE", "SessionParticipations"
+)
 PARTICIPANTS_TABLE = os.environ.get("PARTICIPANTS_TABLE", "MusicQuiz-Participants")
 ANSWERS_TABLE = os.environ.get("ANSWERS_TABLE", "MusicQuiz-Answers")
 QUIZ_SESSIONS_TABLE = os.environ.get("QUIZ_SESSIONS_TABLE", "MusicQuiz-Sessions")
-
-dynamodb = boto3.resource("dynamodb")
 
 
 def lambda_handler(event, context):
@@ -54,8 +55,13 @@ def lambda_handler(event, context):
                 403, "INSUFFICIENT_PERMISSIONS", "Admin role required"
             )
 
-        # Extract tenant ID from token
+        # Extract tenant ID from token and create tenant context
         admin_tenant_id = payload.get("tenantId")
+        tenant_context = {
+            "adminId": payload.get("sub"),
+            "role": role,
+            "tenantId": admin_tenant_id,
+        }
 
         # Extract session ID
         path_parameters = event.get("pathParameters", {})
@@ -81,60 +87,71 @@ def lambda_handler(event, context):
             if access_error:
                 return access_error
 
-        # Get all participants for this session
+        deleted_participations = 0
+        deleted_answers = 0
+
+        # Get all session participations for this session
         try:
-            participants = query(
-                PARTICIPANTS_TABLE,
+            print(f"Querying SessionParticipations for session: {session_id}")
+            participations = query(
+                SESSION_PARTICIPATIONS_TABLE,
                 "sessionId = :sessionId",
                 {":sessionId": session_id},
                 index_name="SessionIndex",
             )
+            print(f"Found {len(participations)} participations to delete")
         except Exception as e:
-            print(f"Query error: {str(e)}")
-            participants = []
+            print(f"Query participations error: {str(e)}")
+            import traceback
+
+            traceback.print_exc()
+            participations = []
 
         # Get all answers for this session
         try:
-            answers = query(
+            print(f"Scanning answers for session: {session_id}")
+            answers = scan(
                 ANSWERS_TABLE,
-                "sessionId = :sessionId",
-                {":sessionId": session_id},
-                index_name="SessionRoundIndex",
+                filter_expression="sessionId = :sessionId",
+                expression_attribute_values={":sessionId": session_id},
             )
+            print(f"Found {len(answers)} answers to delete")
         except Exception as e:
-            print(f"Query error: {str(e)}")
+            print(f"Scan answers error: {str(e)}")
+            import traceback
+
+            traceback.print_exc()
             answers = []
 
-        participants_table = dynamodb.Table(PARTICIPANTS_TABLE)
-        answers_table = dynamodb.Table(ANSWERS_TABLE)
-
-        deleted_participants = 0
-        deleted_answers = 0
-
-        # Delete all answers
+        # Delete all answers first
         for answer in answers:
             try:
-                answers_table.delete_item(Key={"answerId": answer["answerId"]})
+                delete_item(ANSWERS_TABLE, {"answerId": answer["answerId"]})
                 deleted_answers += 1
             except Exception as e:
                 print(f"Delete answer error: {str(e)}")
 
-        # Delete all participants
-        for participant in participants:
+        # Delete all session participations
+        for participation in participations:
             try:
-                participants_table.delete_item(
-                    Key={"participantId": participant["participantId"]}
+                delete_item(
+                    SESSION_PARTICIPATIONS_TABLE,
+                    {"participationId": participation["participationId"]},
                 )
-                deleted_participants += 1
+                deleted_participations += 1
             except Exception as e:
-                print(f"Delete participant error: {str(e)}")
+                print(f"Delete participation error: {str(e)}")
+
+        print(
+            f"Cleared {deleted_participations} participations and {deleted_answers} answers"
+        )
 
         response = {
             "statusCode": 200,
             "body": json.dumps(
                 {
                     "message": "Participants cleared successfully",
-                    "deletedParticipants": deleted_participants,
+                    "deletedParticipations": deleted_participations,
                     "deletedAnswers": deleted_answers,
                 }
             ),

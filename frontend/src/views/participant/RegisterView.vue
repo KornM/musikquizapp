@@ -197,8 +197,10 @@ onMounted(async () => {
       selectedAvatar.value = profile.avatar;
       hasExistingProfile.value = true;
     } catch (err) {
-      console.error("Failed to load existing profile:", err);
-      // If profile load fails, clear saved data and show registration form
+      console.log(
+        "Could not load existing profile (token may have expired), showing registration form"
+      );
+      // If profile load fails (e.g., token expired), clear saved data and show registration form
       localStorage.removeItem("globalParticipantId");
       localStorage.removeItem("globalParticipantToken");
       localStorage.removeItem("globalParticipantTenantId");
@@ -238,6 +240,8 @@ const handleRegister = async () => {
   if (!name.value || !selectedAvatar.value) return;
 
   registering.value = true;
+  error.value = null; // Clear previous errors
+
   try {
     // Check if we already have a global participant ID for this tenant
     const savedParticipantId = localStorage.getItem("globalParticipantId");
@@ -277,7 +281,19 @@ const handleRegister = async () => {
     // Redirect to participant lobby to see all available sessions
     router.push("/lobby");
   } catch (err) {
-    error.value = err.response?.data?.error?.message || "Failed to register";
+    console.error("Registration error:", err);
+
+    // Handle nickname taken error specifically
+    if (err.response?.status === 409) {
+      error.value =
+        err.response?.data?.error?.message ||
+        "This nickname is already taken. Please choose a different name.";
+    } else {
+      error.value =
+        err.response?.data?.error?.message ||
+        err.response?.data?.message ||
+        "Failed to register";
+    }
   } finally {
     registering.value = false;
   }

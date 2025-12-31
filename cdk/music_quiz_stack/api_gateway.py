@@ -76,6 +76,11 @@ class MusicQuizApi(Construct):
             "DELETE", apigateway.LambdaIntegration(lambda_functions.delete_session)
         )
 
+        # PUT /admin/quiz-sessions/{sessionId} - Update session (status, title, description)
+        session_admin.add_method(
+            "PUT", apigateway.LambdaIntegration(lambda_functions.update_session)
+        )
+
         # POST /admin/quiz-sessions/{sessionId}/complete
         complete = session_admin.add_resource("complete")
         complete.add_method(
